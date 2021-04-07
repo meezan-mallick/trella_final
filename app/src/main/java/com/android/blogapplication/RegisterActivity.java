@@ -19,7 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         getSupportActionBar().hide();
         getwidgets();
-
+        info_text.setText("Already have an account?");
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
