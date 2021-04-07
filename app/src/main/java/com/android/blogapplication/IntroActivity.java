@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -15,6 +18,8 @@ import java.util.List;
 public class IntroActivity extends AppCompatActivity {
     private IntroViewPagerAdapter introViewPagerAdapter;
     private LinearLayout indicator_layout;
+    Button login_btn,register_btn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,20 @@ public class IntroActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 setCurrentIndicator(position);
+            }
+        });
+        login_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(i);
+            }
+        });
+        register_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(),RegisterActivity.class);
+                startActivity(i);
             }
         });
 
@@ -77,5 +96,9 @@ public class IntroActivity extends AppCompatActivity {
             }
 
         }
+    }
+    private void getWidgets() {
+        login_btn=(Button) findViewById(R.id.login);
+        register_btn=findViewById(R.id.register);
     }
 }
