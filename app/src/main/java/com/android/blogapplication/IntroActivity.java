@@ -42,8 +42,8 @@ public class IntroActivity extends AppCompatActivity {
     private void setUpOnboardingItems(){
         List<SplashItem> splashItems=new ArrayList<>();
         SplashItem item_list1=new SplashItem("Share your thoughts, \n with like minded peoples",R.drawable.splash_1);
-        SplashItem item_list2=new SplashItem("hello world 1",R.drawable.splash_1);
-        SplashItem item_list3=new SplashItem("hello world 2",R.drawable.splash_1);
+        SplashItem item_list2=new SplashItem("Share your thoughts, \n with like minded peoples",R.drawable.splash_2);
+        SplashItem item_list3=new SplashItem("Share your thoughts, \n with like minded peoples",R.drawable.splash_3);
         splashItems.add(item_list1);
         splashItems.add(item_list2);
         splashItems.add(item_list3);
