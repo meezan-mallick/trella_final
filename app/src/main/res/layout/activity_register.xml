@@ -69,7 +69,7 @@
             android:drawableStart="@drawable/ic_baseline_person_24"
             android:ems="10"
             android:gravity="center"
-            android:hint="UserName"
+            android:hint="User Name"
             android:inputType="textPersonName"
             android:lineSpacingExtra="8sp"
             android:textColor="#636060" />
@@ -140,21 +140,25 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
+            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/info_text"
                 android:layout_width="wrap_content"
                 android:layout_height="13dp"
+                android:gravity="center"
                 android:text="TextView" />
 
             <Button
                 android:id="@+id/login_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
-                android:background="#FFFFFF"
-                android:text="Login" />
+                android:background="@android:color/transparent"
+                android:text="Login"
+                android:textAllCaps="false"
+                android:textColor="@color/gradient_start_color" />
         </LinearLayout>
 
         <!--        636060-->
