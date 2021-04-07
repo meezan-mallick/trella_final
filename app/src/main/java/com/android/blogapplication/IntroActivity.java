@@ -27,7 +27,7 @@ public class IntroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intro);
         getSupportActionBar().hide();
         setUpOnboardingItems();
-
+        getWidgets();
         ViewPager2 onboardingViewPager=findViewById(R.id.viewPager);
         indicator_layout=findViewById(R.id.indicator);
 
