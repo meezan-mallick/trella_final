@@ -17,6 +17,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // Action bar hide
         getSupportActionBar().hide();
         getwidgets();
         info_text.setText("Already have an account?");

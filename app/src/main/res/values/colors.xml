@@ -5,8 +5,8 @@
     <color name="colorAccent">#ffffff</color>
 
     <!--   gradiant  color for button style-->
-    <color name="gradient_start_color">#0089F9</color>
-    <color name="gradient_end_color">#4BAAFA</color>
+    <color name="gradient_start_color">#4BAAFA</color>
+    <color name="gradient_end_color">#0089F9</color>
 
     <!--    colors for tab and screen text-->
     <color name="tab_indicator_gray">#c0c0c0</color>
