@@ -9,13 +9,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextView info_text;
+    private TextView info_text;//
     private Button register_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //hide the title action bar
         getSupportActionBar().hide();
         getWidgets();
 
