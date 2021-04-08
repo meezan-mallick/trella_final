@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "591480272629",
+    "project_id": "trella-169d2",
+    "storage_bucket": "trella-169d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591480272629:android:37eac3783c1bc660c477bc",
+        "android_client_info": {
+          "package_name": "com.android.blogapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591480272629-clrkcj8l4t7pcn9j9j1inh5ejqalmhvf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDezYjJSlMjZEhRi0_poUbijFeR1IR4Oxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591480272629-clrkcj8l4t7pcn9j9j1inh5ejqalmhvf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
