@@ -1,5 +1,6 @@
 package com.android.blogapplication;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
@@ -11,6 +12,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +24,6 @@ public class IntroActivity extends AppCompatActivity {
     private IntroViewPagerAdapter introViewPagerAdapter;
     private LinearLayout indicator_layout;
     Button login_btn,register_btn;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,8 @@ public class IntroActivity extends AppCompatActivity {
         });
 
     }
+
+
     private void setUpOnboardingItems(){
         List<SplashItem> splashItems=new ArrayList<>();
         SplashItem item_list1=new SplashItem("Share your thoughts, \n with like minded peoples",R.drawable.splash_1);
