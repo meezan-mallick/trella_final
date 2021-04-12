@@ -30,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     //Text fields
-    private EditText emailED,passwordED;
+    private EditText emailED,passwordED,CpasswordED;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +41,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Action bar hide
         getSupportActionBar().hide();
+
+        //intialise all the elements
         getwidgets();
-        info_text.setText("Already have an account?");
+
+        //click on Login
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,11 +54,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        //click on Register button
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String emailString = emailED.getText().toString().trim();
                 String passwordString = passwordED.getText().toString().trim();
+                String CpasswordString = CpasswordED.getText().toString().trim();
 
                 if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
                     //set error message
@@ -65,6 +70,10 @@ public class RegisterActivity extends AppCompatActivity {
                 else if(passwordString.length()<6){
                     passwordED.setError("Password must have 6 characters");
                     passwordED.setFocusable(true);
+                }
+                else if(!CpasswordString.equals(passwordString)){
+                    CpasswordED.setError("Password and confirm password should be same");
+                    CpasswordED.setFocusable(true);
                 }
                 else{
                     //register the user
@@ -100,6 +109,8 @@ public class RegisterActivity extends AppCompatActivity {
         registrationButton=findViewById(R.id.registration_btn);
         emailED= findViewById(R.id.email);
         passwordED= findViewById(R.id.password);
+        CpasswordED = findViewById(R.id.confirm_password);
+        info_text.setText("Already have an account?");
 
     }
 }
