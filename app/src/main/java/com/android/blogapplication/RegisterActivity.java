@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,12 +84,40 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    private void getwidgets() {
+        login_btn=findViewById(R.id.login_btn);
+        info_text=findViewById(R.id.info_text);
+        registrationButton=findViewById(R.id.registration_btn);
+        emailED= findViewById(R.id.email);
+        passwordED= findViewById(R.id.password);
+        CpasswordED = findViewById(R.id.confirm_password);
+        info_text.setText("Already have an account?");
+
+    }
+
+
+
     private void registerUSer(String emailString, String passwordString) {
 
         mAuth.createUserWithEmailAndPassword(emailString,passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+
+                    FirebaseUser fUser = mAuth.getCurrentUser();
+                    fUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(RegisterActivity.this, "Verification email has been sent.", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RegisterActivity.this, "Verification email failure.", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
                     FirebaseUser user = mAuth.getCurrentUser();
                     Toast.makeText(RegisterActivity.this, "User registered successfully"+user.getEmail(), Toast.LENGTH_SHORT).show();
                 }else{
@@ -103,14 +132,5 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void getwidgets() {
-        login_btn=findViewById(R.id.login_btn);
-        info_text=findViewById(R.id.info_text);
-        registrationButton=findViewById(R.id.registration_btn);
-        emailED= findViewById(R.id.email);
-        passwordED= findViewById(R.id.password);
-        CpasswordED = findViewById(R.id.confirm_password);
-        info_text.setText("Already have an account?");
 
-    }
 }
