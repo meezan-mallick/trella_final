@@ -1,11 +1,14 @@
 package com.android.blogapplication;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +22,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -27,7 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextView info_text;
+    private TextView info_text,forgotPasswordTV;
     private EditText email,password;
     private Button register_btn,google_login_btn,login_btn;
     private static final int request_code = 1;
@@ -52,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
         account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
 
+        //-- move to Registration activity
         info_text.setText("Don't have account?");
         register_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,26 +66,89 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        //---Login Button---
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Intent i=new Intent(new Intent(getApplicationContext(),ProfileActivity.class));
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(i);
-                        }else{
-                            Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+
+                String emailString = email.getText().toString().trim();
+                String passwordString = password.getText().toString().trim();
+
+                if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
+                    //set error message
+                    email.setError("Invalid Email");
+                    email.setFocusable(true);
+                }
+                else if(passwordString.length()<6){
+                    password.setError("Password must have 6 characters");
+                    password.setFocusable(true);
+                }
+                else{
+                    //register the user
+                    createUSer(emailString,passwordString);
+                }
+
+
             }
         });
 
+        //---Forgot password
+        forgotPasswordTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText resetMail = new EditText(v.getContext());
+                final AlertDialog.Builder passwordResetDailog = new AlertDialog.Builder(v.getContext());
+                passwordResetDailog.setTitle("Reset Password");
+                passwordResetDailog.setMessage("Enter your mail to receive reset password link");
+                passwordResetDailog.setView(resetMail);
+
+
+//                passwordResetDailog.setView(input, (int)(19*dpi), (int)(5*dpi), (int)(14*dpi), (int)(5*dpi) );
+
+                passwordResetDailog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String EmailStr = resetMail.getText().toString().trim();
+
+                        if(!Patterns.EMAIL_ADDRESS.matcher(EmailStr).matches()){
+                            //set error message
+                            resetMail.setError("Invalid Email");
+                            resetMail.setFocusable(true);
+                            Toast.makeText(LoginActivity.this, "Invalid email address", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            mAuth.sendPasswordResetEmail(EmailStr).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(LoginActivity.this, "Reset link has been sent to your email", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(LoginActivity.this, "Error ! link not sent : "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+                passwordResetDailog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+
+                passwordResetDailog.create().show();
+
+            }
+        });
+
+
+        //--- Google Login feature ---
         google_login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +165,31 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void createUSer(String emailString, String passwordString) {
+
+        mAuth.signInWithEmailAndPassword(emailString,passwordString)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
+
+                            Intent i=new Intent(new Intent(getApplicationContext(),ProfileActivity.class));
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+                        }
+                        else{
+                            Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -145,6 +239,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+
+
     private void getWidgets() {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
@@ -152,6 +248,7 @@ public class LoginActivity extends AppCompatActivity {
         register_btn=findViewById(R.id.register_btn);
         info_text=findViewById(R.id.info_text);
         google_login_btn=findViewById(R.id.google_login_btn);
+        forgotPasswordTV = findViewById(R.id.forgotPassword);
     }
 
 }

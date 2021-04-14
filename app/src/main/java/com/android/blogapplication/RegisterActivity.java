@@ -95,8 +95,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-
-
     private void registerUSer(String emailString, String passwordString) {
 
         mAuth.createUserWithEmailAndPassword(emailString,passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -104,6 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
 
+                    //Email Verification
                     FirebaseUser fUser = mAuth.getCurrentUser();
                     fUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -127,13 +126,8 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(i);
 
                 }else{
-                    Toast.makeText(RegisterActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegisterActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
