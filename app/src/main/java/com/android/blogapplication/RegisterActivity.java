@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     //Text fields
-    private EditText emailED,passwordED;
+    private EditText emailED,passwordED,CpasswordED;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +42,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Action bar hide
         getSupportActionBar().hide();
+
+        //intialise all the elements
         getwidgets();
-        info_text.setText("Already have an account?");
+
+        //click on Login
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,11 +55,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        //click on Register button
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String emailString = emailED.getText().toString().trim();
                 String passwordString = passwordED.getText().toString().trim();
+                String CpasswordString = CpasswordED.getText().toString().trim();
 
                 if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
                     //set error message
@@ -66,30 +72,14 @@ public class RegisterActivity extends AppCompatActivity {
                     passwordED.setError("Password must have 6 characters");
                     passwordED.setFocusable(true);
                 }
+                else if(!CpasswordString.equals(passwordString)){
+                    CpasswordED.setError("Password and confirm password should be same");
+                    CpasswordED.setFocusable(true);
+                }
                 else{
                     //register the user
                     registerUSer(emailString,passwordString);
                 }
-            }
-        });
-    }
-
-    private void registerUSer(String emailString, String passwordString) {
-
-        mAuth.createUserWithEmailAndPassword(emailString,passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    Toast.makeText(RegisterActivity.this, "User registered successfully"+user.getEmail(), Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(RegisterActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegisterActivity.this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -100,6 +90,47 @@ public class RegisterActivity extends AppCompatActivity {
         registrationButton=findViewById(R.id.registration_btn);
         emailED= findViewById(R.id.email);
         passwordED= findViewById(R.id.password);
+        CpasswordED = findViewById(R.id.confirm_password);
+        info_text.setText("Already have an account?");
 
     }
+
+    private void registerUSer(String emailString, String passwordString) {
+
+        mAuth.createUserWithEmailAndPassword(emailString,passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+
+                    //Email Verification
+                    FirebaseUser fUser = mAuth.getCurrentUser();
+                    fUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(RegisterActivity.this, "Verification email has been sent.", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RegisterActivity.this, "Verification email failure.", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    Toast.makeText(RegisterActivity.this, "User registered successfully "+user.getEmail(), Toast.LENGTH_SHORT).show();
+
+                    Intent i=new Intent(new Intent(getApplicationContext(),ProfileActivity.class));
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+
+                }else{
+                    Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+
 }
