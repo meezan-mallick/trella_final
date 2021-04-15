@@ -63,6 +63,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i =new Intent(getApplicationContext(),RegisterActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
             }
         });
@@ -79,10 +81,6 @@ public class LoginActivity extends AppCompatActivity {
                     //set error message
                     email.setError("Invalid Email");
                     email.setFocusable(true);
-                }
-                else if(passwordString.length()<6){
-                    password.setError("Password must have 6 characters");
-                    password.setFocusable(true);
                 }
                 else{
                     //register the user
