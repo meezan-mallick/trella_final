@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileActivity extends AppCompatActivity {
     TextView welcome;
-    Button sign_out;
+    Button sign_out,nav;
 
     //firebase object
     private FirebaseAuth mAuth;
@@ -41,10 +41,19 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        nav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(getApplicationContext(),NavigationActivity.class);
+
+                startActivity(i);
+            }
+        });
     }
 
     private void getWidgets() {
         welcome = findViewById(R.id.welcome);
         sign_out = findViewById(R.id.sign_out);
+        nav = findViewById(R.id.nav);
     }
 }

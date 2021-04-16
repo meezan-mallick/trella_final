@@ -11,4 +11,5 @@
     <!--    colors for tab and screen text-->
     <color name="tab_indicator_gray">#c0c0c0</color>
     <color name="intro_title_color">#000</color>
+    <color name="black_overlay">#66000000</color>
 </resources>
