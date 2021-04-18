@@ -175,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                            Intent i=new Intent(new Intent(getApplicationContext(),ProfileActivity.class));
+                            Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
@@ -221,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Successful Auth", Toast.LENGTH_LONG).show();
 
-                            Intent i=new Intent(new Intent(getApplicationContext(),ProfileActivity.class));
+                            Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
