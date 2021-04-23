@@ -1,5 +1,6 @@
 package com.android.blogapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -20,6 +21,11 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,8 +41,11 @@ public class ProfileFragment extends Fragment {
     private  static final int PICK_IMG = 1;
     //firebase object
     private FirebaseAuth mAuth;
+    //firebase firestore object
+    private FirebaseFirestore fstore;
     //firebase User
     private FirebaseUser currentUser;
+    String userID;
 
 
     @Nullable
@@ -51,10 +60,12 @@ public class ProfileFragment extends Fragment {
         profile_img = v.findViewById(R.id.profile_img);
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
+        //intialising the firebase firestore object
+        fstore = FirebaseFirestore.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
         currentUser = mAuth.getCurrentUser();
         if(currentUser.getPhotoUrl() != null){
             Glide.with(container).load(currentUser.getPhotoUrl().toString()).into(profile_img);
-
         }
         if(currentUser.getDisplayName()!=null){
             welcome.setText(currentUser.getDisplayName());
@@ -69,10 +80,21 @@ public class ProfileFragment extends Fragment {
                 gallery.setType("image/*");
                 gallery.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(gallery,"Select Profile"),PICK_IMG);
-
             }
         });
+        
 
+        //Fetch Data from collection users using userID
+        if(currentUser.getDisplayName()==null) {
+            DocumentReference dr = fstore.collection("users").document(userID);
+            dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    welcome.setText(documentSnapshot.getString("userName"));
+                    welcome_txt.setText(documentSnapshot.getString("email"));
+                }
+            });
+        }
 
 
         sign_out.setOnClickListener(new View.OnClickListener() {

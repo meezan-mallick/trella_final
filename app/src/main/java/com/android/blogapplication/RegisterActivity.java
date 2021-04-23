@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,19 +21,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
+    public static final String TAG = "TAG";
     private TextView info_text;
     private Button login_btn;
-
     //registration button
     private Button registrationButton;
-
     //firebase object
     private FirebaseAuth mAuth;
-
+    //FireStore Object
+    private FirebaseFirestore fstore;
     //Text fields
-    private EditText emailED,passwordED,CpasswordED;
+    private EditText username,emailED,passwordED,CpasswordED;
+    private ImageView image_profile;
+    String userID,usernameString,emailString ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +48,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
+
+        //intialising the firebaseFireStore object
+        fstore = FirebaseFirestore.getInstance();
 
         // Action bar hide
         getSupportActionBar().hide();
@@ -61,7 +73,8 @@ public class RegisterActivity extends AppCompatActivity {
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String emailString = emailED.getText().toString().trim();
+                usernameString = username.getText().toString().trim();
+                emailString = emailED.getText().toString().trim();
                 String passwordString = passwordED.getText().toString().trim();
                 String CpasswordString = CpasswordED.getText().toString().trim();
 
@@ -86,24 +99,32 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void getwidgets() {
-        login_btn=findViewById(R.id.login_btn);
-        info_text=findViewById(R.id.info_text);
-        registrationButton=findViewById(R.id.registration_btn);
-        emailED= findViewById(R.id.email);
-        passwordED= findViewById(R.id.password);
-        CpasswordED = findViewById(R.id.confirm_password);
-        info_text.setText("Already have an account?");
 
-    }
 
-    private void registerUSer(String emailString, String passwordString) {
+    private void registerUSer(String emailStr, String passwordStr) {
 
-        mAuth.createUserWithEmailAndPassword(emailString,passwordString).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-
+                    //user data insert into firestore database
+                    userID = mAuth.getCurrentUser().getUid();
+                    DocumentReference dr = fstore.collection("users").document(userID);
+                    Map<String,Object> userData = new HashMap<>();
+                    userData.put("userName",usernameString);
+                    userData.put("email",emailString);
+                    userData.put("profile_image","profile image");
+                    dr.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG,"Onsuccess : user profile is created for "+userID);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG,"OnFailure : "+e.toString());
+                        }
+                    });
                     //Email Verification
                     FirebaseUser fUser = mAuth.getCurrentUser();
                     fUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -115,7 +136,6 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(RegisterActivity.this, "Verification email failure.", Toast.LENGTH_SHORT).show();
-
                         }
                     });
 
@@ -134,5 +154,16 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    private void getwidgets() {
+        username=findViewById(R.id.username);
+        login_btn=findViewById(R.id.login_btn);
+        info_text=findViewById(R.id.info_text);
+        registrationButton=findViewById(R.id.registration_btn);
+        emailED= findViewById(R.id.email);
+        passwordED= findViewById(R.id.password);
+        CpasswordED = findViewById(R.id.confirm_password);
+        info_text.setText("Already have an account?");
+
+    }
 
 }

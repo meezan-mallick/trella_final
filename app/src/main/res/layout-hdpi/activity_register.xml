@@ -53,7 +53,7 @@
                 android:textStyle="bold" />
 
             <ImageButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/image_profile"
                 android:layout_width="20dp"
                 android:layout_height="50dp"
                 android:layout_gravity="right|left|end"
