@@ -63,6 +63,7 @@
             android:id="@+id/profile_img"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_baseline_person_24" />
     </androidx.cardview.widget.CardView>

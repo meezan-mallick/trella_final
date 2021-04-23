@@ -102,7 +102,6 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void registerUSer(String emailStr, String passwordStr) {
-
         mAuth.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -152,9 +151,18 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+        image_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+                startActivityForResult(galleryIntent,1000);
+            }
+        });
     }
 
+
     private void getwidgets() {
+        image_profile=findViewById(R.id.image_profile);
         username=findViewById(R.id.username);
         login_btn=findViewById(R.id.login_btn);
         info_text=findViewById(R.id.info_text);
