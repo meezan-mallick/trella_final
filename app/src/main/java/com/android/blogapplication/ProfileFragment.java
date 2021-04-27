@@ -71,8 +71,7 @@ public class ProfileFragment extends Fragment {
         cat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(getActivity(),CategoryActivity.class);
-                startActivity(i);
+
             }
         });
         //intialising the firebase object
