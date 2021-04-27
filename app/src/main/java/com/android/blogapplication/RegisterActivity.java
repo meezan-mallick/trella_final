@@ -1,10 +1,14 @@
 package com.android.blogapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -23,6 +27,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +45,13 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     //FireStore Object
     private FirebaseFirestore fstore;
+    //Storage for storing images
+    private StorageReference mStorageRef;
     //Text fields
     private EditText username,emailED,passwordED,CpasswordED;
     private ImageView image_profile;
     String userID,usernameString,emailString ;
+    private Uri img_uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +62,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         //intialising the firebaseFireStore object
         fstore = FirebaseFirestore.getInstance();
+
+        //intialising the StorageRefrence object
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         // Action bar hide
         getSupportActionBar().hide();
@@ -68,7 +82,14 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
+        //set profile image
+        image_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent,1000);
+            }
+        });
         //click on Register button
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +158,9 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "Verification email failure.", Toast.LENGTH_SHORT).show();
                         }
                     });
-
+                    if(img_uri!=null) {
+                        uploadImagetoFireBase(img_uri);
+                    }
                     FirebaseUser user = mAuth.getCurrentUser();
                     Toast.makeText(RegisterActivity.this, "User registered successfully "+user.getEmail(), Toast.LENGTH_SHORT).show();
 
@@ -151,14 +174,43 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-        image_profile.setOnClickListener(new View.OnClickListener() {
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1000){
+            if(resultCode == Activity.RESULT_OK){
+                img_uri = data.getData();
+                image_profile.setImageURI(img_uri);
+
+            }
+        }
+    }
+
+    private void uploadImagetoFireBase(final Uri img_uri) {
+        //upload img to firebase storage
+        final StorageReference fileRef = mStorageRef.child("profiles/"+mAuth.getCurrentUser().getUid()+"/profile.jpg");
+        fileRef.putFile(img_uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
-            public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-                startActivityForResult(galleryIntent,1000);
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(img_uri).into(image_profile);
+
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+
 
 
     private void getwidgets() {
