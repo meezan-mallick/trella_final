@@ -15,11 +15,20 @@
 
         <ImageView
             android:id="@+id/cat_img"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:src="@drawable/ic_baseline_person_24" />
+<!--        <TextView-->
+<!--            android:id="@+id/cat_img"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:text="Fashion"-->
+<!--            android:textColor="#000"-->
+<!--            android:textSize="14dp" />-->
 
         <TextView
             android:id="@+id/cat_name"
