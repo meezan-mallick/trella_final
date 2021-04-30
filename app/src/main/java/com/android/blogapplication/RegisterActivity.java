@@ -43,6 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registrationButton;
     //firebase object
     private FirebaseAuth mAuth;
+
+
     //FireStore Object
     private FirebaseFirestore fstore;
     //Storage for storing images
@@ -217,11 +219,11 @@ public class RegisterActivity extends AppCompatActivity {
         image_profile=findViewById(R.id.image_profile);
         username=findViewById(R.id.username);
         login_btn=findViewById(R.id.login_btn);
-        info_text=findViewById(R.id.info_text);
         registrationButton=findViewById(R.id.registration_btn);
         emailED= findViewById(R.id.email);
         passwordED= findViewById(R.id.password);
         CpasswordED = findViewById(R.id.confirm_password);
+        info_text=findViewById(R.id.info_text);
         info_text.setText("Already have an account?");
 
     }
