@@ -3,6 +3,7 @@ package com.android.blogapplication;
 public class CategoryModel {
     private String name;
     private String image;
+    int currentCount = 0;
 
     public CategoryModel() {}
 
@@ -25,5 +26,13 @@ public class CategoryModel {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public int getCurrentCount() {
+        return currentCount;
+    }
+
+    public void setCurrentCount(int currentCount) {
+        this.currentCount = currentCount;
     }
 }

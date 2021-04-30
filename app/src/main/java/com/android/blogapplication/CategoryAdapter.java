@@ -1,6 +1,7 @@
 package com.android.blogapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
     ArrayList<String> category_name;
     ArrayList<String> category_image;
+    ArrayList<String> selected_category;
     Context context;
     LayoutInflater inflater;
 
@@ -36,9 +39,28 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CategoryViewHolder holder, int position) {
         holder.cat_name.setText(category_name.get(position));
         Picasso.get().load(category_image.get(position)).into(holder.cat_img);
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            private int mCounter = 1;
+            @Override
+            public void onClick(View view) {
+                mCounter++;
+                if(mCounter%2==0){
+
+                    holder.itemView.setBackgroundColor(Color.LTGRAY);
+                    Toast.makeText(context, "Item "+holder.cat_name.getText()+" selected", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    holder.itemView.setBackgroundColor(Color.WHITE);
+                    Toast.makeText(context, "Item "+holder.cat_name.getText()+" deselected", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
     @Override
