@@ -72,7 +72,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent(getActivity(),CategoryActivity.class);
+
                 startActivity(i);
+
             }
         });
         //intialising the firebase object

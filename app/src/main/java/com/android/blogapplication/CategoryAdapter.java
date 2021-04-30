@@ -1,61 +1,84 @@
 package com.android.blogapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryAdapter extends FirestoreRecyclerAdapter<SingleCategory, CategoryAdapter.CategoryHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+    ArrayList<String> category_name;
+    ArrayList<String> category_image;
+    ArrayList<String> selected_category;
+    Context context;
+    LayoutInflater inflater;
 
-    View view;
-
-    @Override
-    protected void onBindViewHolder(CategoryHolder holder, int i, SingleCategory singleCategory) {
-        holder.textViewTitle.setText(model.getTitle());
-        holder.textViewDescription.setText(model.getDescription());
-        holder.textViewPriority.setText(String.valueOf(model.getPriority()));
+    public CategoryAdapter(Context context,ArrayList<String> category_name, ArrayList<String> category_image) {
+        this.category_name = category_name;
+        this.category_image = category_image;
+        this.context = context;
+        this.inflater = LayoutInflater.from(context);
     }
 
     @NonNull
     @Override
-    public CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_category,
-                parent, false);
-        return new CategoryHolder(v);
+    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, final int viewType) {
+        View v = inflater.inflate(R.layout.row_category,parent,false);
+        return new CategoryViewHolder(v);
     }
 
-    class CategoryHolder extends RecyclerView.ViewHolder {
-        TextView textViewTitle;
-        TextView textViewDescription;
-        TextView textViewPriority;
-        public CategoryHolder(View itemView) {
+    @Override
+    public void onBindViewHolder(@NonNull final CategoryViewHolder holder, int position) {
+        holder.cat_name.setText(category_name.get(position));
+        Picasso.get().load(category_image.get(position)).into(holder.cat_img);
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            private int mCounter = 1;
+            @Override
+            public void onClick(View view) {
+                mCounter++;
+                if(mCounter%2==0){
+
+                    holder.itemView.setBackgroundColor(Color.LTGRAY);
+                    Toast.makeText(context, "Item "+holder.cat_name.getText()+" selected", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    holder.itemView.setBackgroundColor(Color.WHITE);
+                    Toast.makeText(context, "Item "+holder.cat_name.getText()+" deselected", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return category_name.size();
+    }
+
+    public class CategoryViewHolder extends RecyclerView.ViewHolder{
+
+        TextView cat_name;
+        ImageView cat_img;
+        public CategoryViewHolder(@NonNull final View itemView) {
             super(itemView);
-            textViewTitle = itemView.findViewById(R.id.text_view_title);
-            textViewDescription = itemView.findViewById(R.id.text_view_description);
-            textViewPriority = itemView.findViewById(R.id.text_view_priority);
-        }
-    }
-    public CategoryAdapter(@NonNull View itemView) {
-        super(itemView);
-        view = itemView;
-    }
-    public void setDetails(Context context,String category_name, String category_image){
-        TextView mcategory_name =  view.findViewById(R.id.cat_name);
-        ImageView mcategory_image = view.findViewById(R.id.cat_img);
+            cat_img = itemView.findViewById(R.id.cat_img);
+            cat_name = itemView.findViewById(R.id.cat_name);
 
-        mcategory_name.setText(category_name);
-        Picasso.get().load(category_image).into(mcategory_image);
+        }
+
+
     }
 }
