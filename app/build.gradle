@@ -49,7 +49,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:17.1.2'
     implementation 'com.google.firebase:firebase-storage:19.2.2'
     implementation 'com.google.firebase:firebase-auth:19.2.2'
-    //setData into Recycyler view - firebaseUI for cloud Firestore
+    //setData into Recycyler view
     implementation "com.firebaseui:firebase-ui-auth:3.0.0"
     implementation "com.firebaseui:firebase-ui-firestore:3.0.0"
     //image display from uri
