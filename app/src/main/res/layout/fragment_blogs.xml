@@ -11,7 +11,6 @@
         android:id="@+id/blog_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:background="@color/gradient_end_color"
         app:layout_constraintBottom_toTopOf="@+id/blog_frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,22 +36,22 @@
     <FrameLayout
         android:id="@+id/blog_frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/blog_tabLayout">
-        
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
             android:id="@+id/floating_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="30dp"
-            app:fabSize="normal"
             android:backgroundTint="@color/gradient_end_color"
             android:elevation="6dp"
-            android:src="@drawable/blog_create" />
+            android:src="@drawable/blog_create"
+            app:fabSize="normal" />
 
 
     </FrameLayout>
