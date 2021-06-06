@@ -102,10 +102,12 @@ public class CreateBlogActivity extends AppCompatActivity {
             }
         });
 
-        //spinner data
-        String[] arraySpinner = new String[] {"Current Affairs", "Entertainment", "Fashion", "Food", "Health", "Technology", "Travel","Spiritual","Sports"};
+        //spinner data [CATEGORY DROPDOWN]
+        //String[] arraySpinner = new String[] {"Current Affairs", "Entertainment", "Fashion", "Food", "Health", "Technology", "Travel","Spiritual","Sports"};
         cat_list = new ArrayList<>();
         cat_list.add("Select Category");
+
+        //fetching the categories from the firestore collection and storing into cat_list_array ;
         fstore.collection("categories")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
