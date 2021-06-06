@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.common.net.InternetDomainName;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -55,7 +59,7 @@ public class CreateBlogActivity extends AppCompatActivity {
     private  Spinner spinner;
     private DatabaseReference dbref;
     private FirebaseFirestore fstore;
-    Button publish;
+    Button publish,draft;
     EditText blog_title,blog_content;
     ImageView upload_img;
     ValueEventListener listener;
@@ -63,11 +67,12 @@ public class CreateBlogActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     String userID;
     Boolean publish_draft;
-    private Uri img_uri;
+    Uri img_uri;
     //firebase object
     private FirebaseAuth mAuth;
     //Storage for storing images
     private StorageReference mStorageRef;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,15 +88,14 @@ public class CreateBlogActivity extends AppCompatActivity {
 //        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
 //        String currentTime = df.format(Calendar.getInstance().getTime());
 
-
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
+        //intialising the StorageRefrence object
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+
         dbref = FirebaseDatabase.getInstance().getReference("categories");
         fstore = FirebaseFirestore.getInstance();
         DocumentReference dr = fstore.collection("categories").document("cat1");
-        Query query = fstore.collection("categories");
-
-
 
         //set blog image
         upload_img.setOnClickListener(new View.OnClickListener() {
@@ -102,8 +106,12 @@ public class CreateBlogActivity extends AppCompatActivity {
             }
         });
 
+<<<<<<< HEAD
         //spinner data [CATEGORY DROPDOWN]
         //String[] arraySpinner = new String[] {"Current Affairs", "Entertainment", "Fashion", "Food", "Health", "Technology", "Travel","Spiritual","Sports"};
+=======
+        //spinner data
+>>>>>>> 7376284d8453549834f2cbb304e8db2e91eed0b4
         cat_list = new ArrayList<>();
         cat_list.add("Select Category");
 
@@ -149,30 +157,60 @@ public class CreateBlogActivity extends AppCompatActivity {
             public void onClick(View view) {
                 publish_draft = true;
                 DateFormat df = new SimpleDateFormat("dMMMyyyy_HH:mm");
-                String time = df.format(Calendar.getInstance().getTime());
-                if(img_uri!=null) {
-
-                }
-                uploadImagetoFireBase(img_uri,time);
-//                addBlog(publish_draft,time);
+                String pub_time = df.format(Calendar.getInstance().getTime());
+                uploadImagetoFireBase(img_uri,pub_time);
+                addBlog(publish_draft,pub_time);
+            }
+        });
+        draft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                publish_draft = false;
+                DateFormat df = new SimpleDateFormat("dMMMyyyy_HH:mm");
+                String draft_time = df.format(Calendar.getInstance().getTime());
+                uploadImagetoFireBase(img_uri,draft_time);
+                addBlog(publish_draft,draft_time);
             }
         });
     }
 
-    public void addBlog(Boolean publish_bol,String add_time){
+    private void uploadImagetoFireBase(final Uri img_uri,String post_time) {
+        //upload img to firebase storage
+        final StorageReference fileRef = mStorageRef.child("blogsImages/"+mAuth.getCurrentUser().getUid()+"/"+post_time+"-blogImage.jpg");
+        fileRef.putFile(img_uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Toast.makeText(CreateBlogActivity.this, "image uploaded", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CreateBlogActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public void addBlog(Boolean publish_bol,String post_time){
         userID = mAuth.getCurrentUser().getUid();
         String selected_cat = spinner.getSelectedItem().toString();
+        String img_path = "blogsImages/"+mAuth.getCurrentUser().getUid()+"/"+post_time+"-blogImage.jpg";
         Toast.makeText(this, "userId" + userID, Toast.LENGTH_SHORT).show();
 
         // Add a new blog(document)
         Map<String, Object> blogData = new HashMap<>();
         blogData.put("blog content",blog_content.getText().toString());
-        blogData.put("blog image","image");
+        blogData.put("blog image",img_path);
         blogData.put("blog title",blog_title.getText().toString());
-        blogData.put("category_id",selected_cat);
+        blogData.put("category",selected_cat);
         blogData.put("publish",publish_bol);
         blogData.put("user_id",userID);
-        blogData.put("time",add_time);
+        blogData.put("time",post_time);
         fstore.collection("blogs")
                 .add(blogData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -190,28 +228,7 @@ public class CreateBlogActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void uploadImagetoFireBase(final Uri img_uri,String add_time) {
 
-        //upload img to firebase storage
-        final StorageReference fileRef = mStorageRef.child("blogsImages/"+add_time+"blogimage.jpg");
-        fileRef.putFile(img_uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Picasso.get().load(img_uri).into(upload_img);
-                        Toast.makeText(CreateBlogActivity.this, "Blog Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CreateBlogActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
     //open gallery on click
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -228,11 +245,13 @@ public class CreateBlogActivity extends AppCompatActivity {
         onBackPressed();
         return super.onSupportNavigateUp();
     }
+
     private void getWidgets() {
         spinner =  findViewById(R.id.spinner);
         publish = findViewById(R.id.publish);
+        draft = findViewById(R.id.draft);
         blog_title = findViewById(R.id.blog_title);
-       blog_content = findViewById(R.id.blog_content);
+        blog_content = findViewById(R.id.blog_content);
         upload_img = findViewById(R.id.upload_image);
     }
 
