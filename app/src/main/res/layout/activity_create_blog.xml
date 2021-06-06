@@ -27,6 +27,7 @@
                 android:ems="10"
                 android:gravity="bottom"
                 android:hint="Post Title"
+
                 android:inputType="textPersonName" />
 
             <LinearLayout
@@ -52,7 +53,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Publish" />
+                    android:text="Publish"
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
@@ -80,103 +82,98 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Draft" />
+                    android:text="Draft"
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/linearLayout5"
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/edit_text_border" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+
+        <!--        <EditText-->
+        <!--            android:id="@+id/blog_content"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="20dp"-->
+        <!--            android:layout_marginBottom="10dp"-->
+        <!--            android:ems="10"-->
+        <!--            android:gravity="start|top"-->
+        <!--            android:hint="Post Content"-->
+        <!--            android:inputType="textMultiLine" />-->
+
+        <EditText
+            android:id="@+id/blog_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_border"
+            android:gravity="top|left"
+            android:hint="Post Content"
+            android:inputType="textMultiLine"
+            android:lines="6"
+            android:overScrollMode="always"
+            android:padding="5dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:scrollHorizontally="false"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="Upload an image for post" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+            android:background="@android:color/transparent"
+            android:padding="20dp">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="133dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="10dp"
-                android:text="Select Category"
-                android:textSize="18sp" />
-
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="230dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
-                android:padding="0dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
-
-
-            <!--        <EditText-->
-            <!--            android:id="@+id/blog_content"-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:layout_marginTop="20dp"-->
-            <!--            android:layout_marginBottom="10dp"-->
-            <!--            android:ems="10"-->
-            <!--            android:gravity="start|top"-->
-            <!--            android:hint="Post Content"-->
-            <!--            android:inputType="textMultiLine" />-->
-            <EditText
-                android:id="@+id/blog_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@null"
-                android:gravity="top|left"
-                android:inputType="textMultiLine"
-                android:lines="6"
-                android:overScrollMode="always"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                android:scrollHorizontally="false"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:text="Upload an image for post" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+            <ImageView
+                android:id="@+id/upload_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:padding="20dp">
-
-                <ImageView
-                    android:id="@+id/upload_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/upload_image" />
-            </androidx.cardview.widget.CardView>
+                app:srcCompat="@drawable/upload_image" />
+        </androidx.cardview.widget.CardView>
 
 
-        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

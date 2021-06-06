@@ -106,12 +106,8 @@ public class CreateBlogActivity extends AppCompatActivity {
             }
         });
 
-<<<<<<< HEAD
+
         //spinner data [CATEGORY DROPDOWN]
-        //String[] arraySpinner = new String[] {"Current Affairs", "Entertainment", "Fashion", "Food", "Health", "Technology", "Travel","Spiritual","Sports"};
-=======
-        //spinner data
->>>>>>> 7376284d8453549834f2cbb304e8db2e91eed0b4
         cat_list = new ArrayList<>();
         cat_list.add("Select Category");
 
@@ -200,7 +196,7 @@ public class CreateBlogActivity extends AppCompatActivity {
         userID = mAuth.getCurrentUser().getUid();
         String selected_cat = spinner.getSelectedItem().toString();
         String img_path = "blogsImages/"+mAuth.getCurrentUser().getUid()+"/"+post_time+"-blogImage.jpg";
-        Toast.makeText(this, "userId" + userID, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "userId" + userID, Toast.LENGTH_SHORT).show();
 
         // Add a new blog(document)
         Map<String, Object> blogData = new HashMap<>();
@@ -218,6 +214,8 @@ public class CreateBlogActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
                         Toast.makeText(CreateBlogActivity.this, "New Blog added Successfully", Toast.LENGTH_SHORT).show();
+
+                        onBackPressed(); 
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -237,7 +235,7 @@ public class CreateBlogActivity extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
                 img_uri = data.getData();
                 upload_img.setImageURI(img_uri);
-                Toast.makeText(this, "image uri : "+img_uri, Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "image uri : "+img_uri, Toast.LENGTH_LONG).show();
             }
         }
     }
