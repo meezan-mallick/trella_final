@@ -152,8 +152,10 @@ public class CreateBlogActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 publish_draft = true;
+                Toast.makeText(CreateBlogActivity.this, "btn publish", Toast.LENGTH_SHORT).show();
                 DateFormat df = new SimpleDateFormat("dMMMyyyy_HH:mm");
                 String pub_time = df.format(Calendar.getInstance().getTime());
+                Toast.makeText(CreateBlogActivity.this, pub_time, Toast.LENGTH_SHORT).show();
                 uploadImagetoFireBase(img_uri,pub_time);
                 addBlog(publish_draft,pub_time);
             }
@@ -200,9 +202,9 @@ public class CreateBlogActivity extends AppCompatActivity {
 
         // Add a new blog(document)
         Map<String, Object> blogData = new HashMap<>();
-        blogData.put("blog content",blog_content.getText().toString());
-        blogData.put("blog image",img_path);
-        blogData.put("blog title",blog_title.getText().toString());
+        blogData.put("blog_title",blog_title.getText().toString());
+        blogData.put("blog_content",blog_content.getText().toString());
+        blogData.put("blog_image",img_path);
         blogData.put("category",selected_cat);
         blogData.put("publish",publish_bol);
         blogData.put("user_id",userID);
@@ -214,7 +216,6 @@ public class CreateBlogActivity extends AppCompatActivity {
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
                         Toast.makeText(CreateBlogActivity.this, "New Blog added Successfully", Toast.LENGTH_SHORT).show();
-
                         onBackPressed(); 
                     }
                 })
@@ -252,5 +253,4 @@ public class CreateBlogActivity extends AppCompatActivity {
         blog_content = findViewById(R.id.blog_content);
         upload_img = findViewById(R.id.upload_image);
     }
-
 }

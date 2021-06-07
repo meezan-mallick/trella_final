@@ -55,11 +55,8 @@ public class CategoryActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for(QueryDocumentSnapshot documentsnapShot:queryDocumentSnapshots){
-                            CategoryModel c = documentsnapShot.toObject(CategoryModel.class);
-                            cat_name.add(c.getName());
-                            cat_img.add(c.getImage());
-                        }
+                        for(QueryDocumentSnapshot documentsnapShot:queryDocumentSnapshots)
+
                         adapter = new CategoryAdapter(getApplicationContext(),cat_name,cat_img);
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(),2,GridLayoutManager.VERTICAL,false);
                         category_recycler.setLayoutManager(gridLayoutManager);
