@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -40,8 +41,9 @@ public class MyBlogsFragment extends Fragment {
     private FirebaseFirestore fstore;
     private BlogRecyclerAdapter blogRecyclerAdapter;
     private CollectionReference collectionRef;
-    ArrayList<BlogPost> mArrayList;
     public static final String TAG = "TAG";
+    //firebase object
+    private FirebaseAuth mAuth;
     public MyBlogsFragment(){
 
     }
@@ -57,12 +59,15 @@ public class MyBlogsFragment extends Fragment {
 
         blog_post_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         blog_post_view.setAdapter(blogRecyclerAdapter);
+        //intialising the firebase object
+        mAuth = FirebaseAuth.getInstance();
         //initialize FirebaseFirestore object
         fstore = FirebaseFirestore.getInstance();
         blogRecyclerAdapter.notifyDataSetChanged();
 
         fstore.collection("blogs").
                 whereEqualTo("publish",true)
+                .whereEqualTo("user_id",mAuth.getCurrentUser().getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {

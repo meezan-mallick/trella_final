@@ -9,6 +9,17 @@
         android:id="@+id/cardViewMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/blog_shadow"
+        android:elevation="20dp"
+        app:cardElevation="5dp"
+        app:cardMaxElevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,23 +34,26 @@
                 android:id="@+id/linearLayout6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="2dp"
                 android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/blog_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewProfile"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
                     android:background="@android:color/transparent"
                     app:cardCornerRadius="250dp">
 
                     <ImageView
                         android:id="@+id/image_profile"
-                        android:layout_width="70dp"
-                        android:layout_height="60dp"
+                        android:layout_width="60dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:scaleType="centerCrop"
                         app:srcCompat="@drawable/userprofile" />
@@ -76,13 +90,16 @@
                 android:id="@+id/blog_image"
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/blog_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
                 app:srcCompat="@drawable/upload_image" />
 
             <TextView
-                android:id="@+id/blog_description"
+                android:id="@+id/blog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -90,12 +107,28 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="4dp"
+                android:text="Title"
+                android:textColor="#504F4F"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/blog_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/blog_image" />
+
+            <TextView
+                android:id="@+id/blog_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
                 android:text="This article explains how to build an Android application with the ability to select the image from the mobile gallery and upload images to Firebase Storage"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/blog_image" />
+                app:layout_constraintTop_toBottomOf="@+id/blog_title" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

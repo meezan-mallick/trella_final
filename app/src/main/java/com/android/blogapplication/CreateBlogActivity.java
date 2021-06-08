@@ -68,6 +68,8 @@ public class CreateBlogActivity extends AppCompatActivity {
     String userID;
     Boolean publish_draft;
     Uri img_uri;
+    DateFormat df,df1;
+    boolean select_cat;
     //firebase object
     private FirebaseAuth mAuth;
     //Storage for storing images
@@ -136,11 +138,11 @@ public class CreateBlogActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(i==0){
-                    Toast.makeText(CreateBlogActivity.this, "please select category", Toast.LENGTH_SHORT).show();
+                    select_cat=false;
                 }
                 else {
-                    String cat_name = adapterView.getItemAtPosition(i).toString();
-                    Toast.makeText(CreateBlogActivity.this, "Seleccted : " + cat_name, Toast.LENGTH_SHORT).show();
+                    select_cat=true;
+//                    String cat_name = adapterView.getItemAtPosition(i).toString();
                 }
             }
             @Override
@@ -148,26 +150,34 @@ public class CreateBlogActivity extends AppCompatActivity {
             }
         });
 
+        df = new SimpleDateFormat("dMMMyyyy_HH:mm");
+        df1 = new SimpleDateFormat("d MMM, yyyy-HH:mm");
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                publish_draft = true;
-                Toast.makeText(CreateBlogActivity.this, "btn publish", Toast.LENGTH_SHORT).show();
-                DateFormat df = new SimpleDateFormat("dMMMyyyy_HH:mm");
-                String pub_time = df.format(Calendar.getInstance().getTime());
-                Toast.makeText(CreateBlogActivity.this, pub_time, Toast.LENGTH_SHORT).show();
-                uploadImagetoFireBase(img_uri,pub_time);
-                addBlog(publish_draft,pub_time);
+                if(select_cat == false){
+                    Toast.makeText(CreateBlogActivity.this, "Please Select Category", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    publish_draft = true;
+                    Toast.makeText(CreateBlogActivity.this, "btn publish", Toast.LENGTH_SHORT).show();
+                    String pub_time = df.format(Calendar.getInstance().getTime());
+                    Date t = Calendar.getInstance().getTime();
+                    Toast.makeText(CreateBlogActivity.this, pub_time, Toast.LENGTH_SHORT).show();
+                    uploadImagetoFireBase(img_uri,pub_time);
+                    addBlog(publish_draft,pub_time,t);
+                }
+
             }
         });
         draft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 publish_draft = false;
-                DateFormat df = new SimpleDateFormat("dMMMyyyy_HH:mm");
+                Date t = Calendar.getInstance().getTime();
                 String draft_time = df.format(Calendar.getInstance().getTime());
                 uploadImagetoFireBase(img_uri,draft_time);
-                addBlog(publish_draft,draft_time);
+                addBlog(publish_draft,draft_time,t);
             }
         });
     }
@@ -194,11 +204,10 @@ public class CreateBlogActivity extends AppCompatActivity {
 
     }
 
-    public void addBlog(Boolean publish_bol,String post_time){
+    public void addBlog(Boolean publish_bol,String post_time,Date d){
         userID = mAuth.getCurrentUser().getUid();
         String selected_cat = spinner.getSelectedItem().toString();
         String img_path = "blogsImages/"+mAuth.getCurrentUser().getUid()+"/"+post_time+"-blogImage.jpg";
-//        Toast.makeText(this, "userId" + userID, Toast.LENGTH_SHORT).show();
 
         // Add a new blog(document)
         Map<String, Object> blogData = new HashMap<>();
@@ -209,6 +218,7 @@ public class CreateBlogActivity extends AppCompatActivity {
         blogData.put("publish",publish_bol);
         blogData.put("user_id",userID);
         blogData.put("time",post_time);
+        blogData.put("date",d);
         fstore.collection("blogs")
                 .add(blogData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -236,7 +246,6 @@ public class CreateBlogActivity extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
                 img_uri = data.getData();
                 upload_img.setImageURI(img_uri);
-//                Toast.makeText(this, "image uri : "+img_uri, Toast.LENGTH_LONG).show();
             }
         }
     }
