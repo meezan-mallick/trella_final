@@ -53,7 +53,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+ 
 public class CreateBlogActivity extends AppCompatActivity {
     public static final String TAG = "TAG";
     private  Spinner spinner;

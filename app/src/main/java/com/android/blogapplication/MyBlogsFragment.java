@@ -80,7 +80,7 @@ public class MyBlogsFragment extends Fragment {
                     }
                 }
             }
-        });
+        }); 
         return v;
     }
 }
