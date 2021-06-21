@@ -40,7 +40,7 @@ import java.net.URI;
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
-    TextView welcome,welcome_txt;
+    TextView userName,userEmail,no_of_followers,no_of_posts,no_of_drafts;
     Button sign_out,cat;
     ImageView profile_img;
     Uri img_uri;
@@ -62,11 +62,18 @@ public class ProfileFragment extends Fragment {
 
         View v=inflater.inflate(R.layout.fragment_profile,container,false);
 
-        welcome = v.findViewById(R.id.welcome);
-        welcome_txt=v.findViewById(R.id.welcome_txt);
+        userName = v.findViewById(R.id.profileUsername);
+        userEmail =v.findViewById(R.id.profileUserEmail);
+
+        no_of_followers = v.findViewById(R.id.followers_no);
+        no_of_posts =v.findViewById(R.id.posts_no);
+        no_of_drafts =v.findViewById(R.id.drafts_no);
+
         sign_out = v.findViewById(R.id.sign_out);
         profile_img = v.findViewById(R.id.profile_img);
-//test
+
+
+        //test
         cat = v.findViewById(R.id.cat);
         cat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,10 +118,10 @@ public class ProfileFragment extends Fragment {
             Glide.with(container).load(currentUser.getPhotoUrl().toString()).into(profile_img);
         }
         if(currentUser.getDisplayName()!=null){
-            welcome.setText(currentUser.getDisplayName());
+            userName.setText(currentUser.getDisplayName());
         }
         if(currentUser.getEmail()!=null){
-            welcome_txt.setText(currentUser.getEmail());
+            userEmail.setText(currentUser.getEmail());
         }
         //pick image from gallery
         profile_img.setOnClickListener(new View.OnClickListener() {
@@ -131,8 +138,8 @@ public class ProfileFragment extends Fragment {
             dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                    welcome.setText(documentSnapshot.getString("userName"));
-                    welcome_txt.setText(documentSnapshot.getString("email"));
+                    userName.setText(documentSnapshot.getString("userName"));
+                    userEmail.setText(documentSnapshot.getString("email"));
                 }
             });
         }

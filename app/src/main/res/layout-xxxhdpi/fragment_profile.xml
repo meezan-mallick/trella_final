@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <TextView
-            android:id="@+id/welcome"
+            android:id="@+id/profileUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -58,7 +58,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/welcome_txt"
+            android:id="@+id/profileUserEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -78,21 +78,46 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/followers_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="1100"
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/followTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Followers" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/posts_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="10"
-                android:textSize="20sp" />
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/textVw9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Posts" />
@@ -105,12 +130,14 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/drafts_no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="4"
-                android:textSize="20sp" />
+                android:textColor="#000000"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView7"
