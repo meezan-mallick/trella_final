@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
 
-        account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+//        account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
 
         //-- move to Registration activity
         info_text.setText("Don't have account?");
@@ -86,8 +86,6 @@ public class LoginActivity extends AppCompatActivity {
                     //register the user
                     createUSer(emailString,passwordString);
                 }
-
-
             }
         });
 
@@ -100,7 +98,6 @@ public class LoginActivity extends AppCompatActivity {
                 passwordResetDailog.setTitle("Reset Password");
                 passwordResetDailog.setMessage("Enter your mail to receive reset password link");
                 passwordResetDailog.setView(resetMail);
-
 
 //                passwordResetDailog.setView(input, (int)(19*dpi), (int)(5*dpi), (int)(14*dpi), (int)(5*dpi) );
 
@@ -128,7 +125,6 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
                         }
-
                     }
                 });
 
@@ -138,10 +134,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
-
-
                 passwordResetDailog.create().show();
-
             }
         });
 
@@ -165,13 +158,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void createUSer(String emailString, String passwordString) {
-
         mAuth.signInWithEmailAndPassword(emailString,passwordString)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
 
@@ -191,7 +182,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == request_code) {
             // The Task returned from this call is always completed, no need to attach
@@ -202,7 +192,6 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 Toast.makeText(this, "Gooogle Auth failed", Toast.LENGTH_LONG);
-
             }
         }
     }
@@ -236,8 +225,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
 
     private void getWidgets() {
         email = findViewById(R.id.email);

@@ -71,15 +71,17 @@ public class ProfileFragment extends Fragment {
 
         sign_out = v.findViewById(R.id.sign_out);
         profile_img = v.findViewById(R.id.profile_img);
+<<<<<<< HEAD
 
 
         //test
+=======
+>>>>>>> 4798bbf5ea2131d6a775b0c7a78c6cc18810d1c2
         cat = v.findViewById(R.id.cat);
         cat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent(getActivity(),CategoryActivity.class);
-
                 startActivity(i);
 
             }
@@ -120,6 +122,17 @@ public class ProfileFragment extends Fragment {
         if(currentUser.getDisplayName()!=null){
             userName.setText(currentUser.getDisplayName());
         }
+        else{
+            //Fetch Data from collection users using userID
+            DocumentReference dr = fstore.collection("users").document(userID);
+            dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    welcome.setText(documentSnapshot.getString("userName"));
+                    welcome_txt.setText(documentSnapshot.getString("email"));
+                }
+            });
+        }
         if(currentUser.getEmail()!=null){
             userEmail.setText(currentUser.getEmail());
         }
@@ -132,6 +145,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+<<<<<<< HEAD
         //Fetch Data from collection users using userID
         if(currentUser.getDisplayName()==null) {
             DocumentReference dr = fstore.collection("users").document(userID);
@@ -143,6 +157,19 @@ public class ProfileFragment extends Fragment {
                 }
             });
         }
+=======
+//        //Fetch Data from collection users using userID
+//        if(currentUser.getDisplayName()==null) {
+//            DocumentReference dr = fstore.collection("users").document(userID);
+//            dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//                @Override
+//                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+//                    welcome.setText(documentSnapshot.getString("userName"));
+//                    welcome_txt.setText(documentSnapshot.getString("email"));
+//                }
+//            });
+//        }
+>>>>>>> 4798bbf5ea2131d6a775b0c7a78c6cc18810d1c2
         sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
