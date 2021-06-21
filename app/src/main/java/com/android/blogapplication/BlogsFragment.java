@@ -73,12 +73,6 @@ public class BlogsFragment extends Fragment {
         floating_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Fragment fragment = null;
-//                fragment = new CreateBlogFragment();
-//                FragmentManager manager = getActivity().getSupportFragmentManager();
-//                FragmentTransaction transaction = manager.beginTransaction();
-//                transaction.replace(R.id.blog_frameLayout,fragment);
-//                transaction.commit();
                 Intent i= new Intent(getActivity().getApplicationContext(),CreateBlogActivity.class);
                 startActivity(i);
             }

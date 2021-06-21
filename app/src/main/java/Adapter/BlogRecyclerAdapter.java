@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +17,11 @@ import com.android.blogapplication.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -41,14 +48,17 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         String blog_img_uri = blog_list.get(position).getBlog_image();
         String uid = blog_list.get(position).getBlog_image();
+        //intialising the firebase firestore object
+        FirebaseFirestore fstore = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        String profile_img_uri = "profiles/"+blog_list.get(position).getUser_id()+"/profile.jpg";
 
+        String profile_img_uri = "profiles/"+blog_list.get(position).getUser_id()+"/profile.jpg";
+        String user_id = blog_list.get(position).getUser_id();
         holder.setTime(blog_list.get(position).getTime());
         holder.setDescription(blog_list.get(position).getBlog_content());
         holder.setTitle(blog_list.get(position).getBlog_title());
-        holder.setUserName(currentUser.getDisplayName());
+
 
         //Storage for storing images
         StorageReference mStorageRef,profileRef;
@@ -63,7 +73,22 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                 }
             }
         });
-        profileRef = mStorageRef.child(profile_img_uri);
+        //Fetch Data from collection users using userID
+        if(currentUser.getDisplayName()!="") {
+            holder.setUserName(currentUser.getDisplayName());
+            profileRef = mStorageRef.child(profile_img_uri);
+
+        }else{
+            holder.setUserName(currentUser.getDisplayName());
+            profileRef = mStorageRef.child("profiles/"+user_id+"/profile.jpg");
+            DocumentReference dr = fstore.collection("users").document(user_id);
+            dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    holder.setUserName(documentSnapshot.getString("userName"));
+                }
+            });
+        }
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -72,6 +97,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                 }
             }
         });
+
     }
 
     @Override
