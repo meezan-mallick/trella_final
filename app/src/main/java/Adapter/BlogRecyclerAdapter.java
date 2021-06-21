@@ -34,6 +34,9 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     Context ctx;
     public BlogRecyclerAdapter(List<BlogModel> blog_list) {
         this.blog_list = blog_list;
+    }
+
+    public BlogRecyclerAdapter() {
 
     }
 
@@ -104,6 +107,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     public int getItemCount() {
         return blog_list.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView blog_description,blog_time,blog_title,username;
