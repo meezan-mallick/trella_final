@@ -34,8 +34,6 @@ public class BlogsFragment extends Fragment {
         blog_frameLayout = v.findViewById(R.id.blog_frameLayout);
         floating_btn = v.findViewById(R.id.floating_btn);
 
-
-
         Fragment fragment = null;
         fragment = new MyBlogsFragment();
         FragmentManager manager = getActivity().getSupportFragmentManager();
@@ -73,12 +71,6 @@ public class BlogsFragment extends Fragment {
         floating_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Fragment fragment = null;
-//                fragment = new CreateBlogFragment();
-//                FragmentManager manager = getActivity().getSupportFragmentManager();
-//                FragmentTransaction transaction = manager.beginTransaction();
-//                transaction.replace(R.id.blog_frameLayout,fragment);
-//                transaction.commit();
                 Intent i= new Intent(getActivity().getApplicationContext(),CreateBlogActivity.class);
                 startActivity(i);
             }
