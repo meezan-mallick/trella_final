@@ -35,8 +35,6 @@ public class BlogsFragment extends Fragment {
         blog_frameLayout = v.findViewById(R.id.blog_frameLayout);
         floating_btn = v.findViewById(R.id.floating_btn);
 
-
-
         Fragment fragment = null;
         fragment = new MyBlogsFragment();
         FragmentManager manager = getActivity().getSupportFragmentManager();

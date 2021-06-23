@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -100,15 +101,26 @@ public class RegisterActivity extends AppCompatActivity {
                 emailString = emailED.getText().toString().trim();
                 String passwordString = passwordED.getText().toString().trim();
                 String CpasswordString = CpasswordED.getText().toString().trim();
+                if(TextUtils.isEmpty(usernameString)){
+                    username.setError("Enter Username");
+                    username.setFocusable(true);
 
-                if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
+                }
+                else if(TextUtils.isEmpty(emailString)){
                     //set error message
-                    emailED.setError("Invalid Email");
+                    emailED.setError("Enter email id");
                     emailED.setFocusable(true);
                 }
-                else if(passwordString.length()<6){
-                    passwordED.setError("Password must have 6 characters");
+                else if(TextUtils.isEmpty(passwordString)){
+                    passwordED.setError("Enter password");
                     passwordED.setFocusable(true);
+                }
+                else if(passwordString.length()<=8 ){
+                    passwordED.setError("Password length should be 8 or ore than 8 characters");
+                    passwordED.setFocusable(true);
+                }
+                else if(TextUtils.isEmpty(CpasswordString)){
+                    CpasswordED.setError("Enter Confirm Password");
                 }
                 else if(!CpasswordString.equals(passwordString)){
                     CpasswordED.setError("Password and confirm password should be same");

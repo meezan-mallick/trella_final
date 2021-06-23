@@ -107,14 +107,12 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(ctx, SingleBlogDataActivity.class);
-                i.putExtra("blogimage",temp_data.getBlog_image());
+                i.putExtra("imagename",temp_data.getBlog_image());
                 i.putExtra("username",uname);
                 i.putExtra("content",temp_data.getBlog_content());
-                i.putExtra("title",temp_data.getBlog_title());
-                i.putExtra("time",temp_data.getTime());
-                i.putExtra("uid",temp_data.getUser_id());
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 ctx.startActivity(i);
+
             }
         });
     }

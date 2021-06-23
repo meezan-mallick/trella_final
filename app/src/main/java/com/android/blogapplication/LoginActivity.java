@@ -30,11 +30,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private TextView info_text,forgotPasswordTV;
@@ -43,12 +38,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final int request_code = 1;
     GoogleSignInClient signInClient;
     GoogleSignInAccount account;
-    public static final String TAG = "TAG";
-    String userID;
+
     //firebase object
     private FirebaseAuth mAuth;
-    //FireStore Object
-    private FirebaseFirestore fstore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +51,11 @@ public class LoginActivity extends AppCompatActivity {
         getWidgets();
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
-        //intialising the firebaseFireStore object
-        fstore = FirebaseFirestore.getInstance();
-
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
 
-//        account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
 
         //-- move to Registration activity
         info_text.setText("Don't have account?");
@@ -97,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
                     //register the user
                     createUSer(emailString,passwordString);
                 }
+
+
             }
         });
 
@@ -109,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                 passwordResetDailog.setTitle("Reset Password");
                 passwordResetDailog.setMessage("Enter your mail to receive reset password link");
                 passwordResetDailog.setView(resetMail);
+
 
 //                passwordResetDailog.setView(input, (int)(19*dpi), (int)(5*dpi), (int)(14*dpi), (int)(5*dpi) );
 
@@ -136,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
                         }
+
                     }
                 });
 
@@ -145,7 +138,10 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
+
+
                 passwordResetDailog.create().show();
+
             }
         });
 
@@ -168,14 +164,17 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void createUSer(final String emailString, final String passwordString) {
+    private void createUSer(String emailString, String passwordString) {
+
         mAuth.signInWithEmailAndPassword(emailString,passwordString)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
+
                             Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -192,6 +191,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == request_code) {
             // The Task returned from this call is always completed, no need to attach
@@ -202,6 +202,7 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 Toast.makeText(this, "Gooogle Auth failed", Toast.LENGTH_LONG);
+
             }
         }
     }
@@ -220,24 +221,6 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Successful Auth", Toast.LENGTH_LONG).show();
 
-                            userID = mAuth.getCurrentUser().getUid();
-                            DocumentReference dr = fstore.collection("users").document(userID);
-                            Map<String,Object> userData = new HashMap<>();
-                            userData.put("userName",mAuth.getCurrentUser().getDisplayName());
-                            userData.put("email",mAuth.getCurrentUser().getEmail());
-                            userData.put("profile_image",mAuth.getCurrentUser().getPhotoUrl().toString());
-                            dr.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG,"Onsuccess : user profile is created for "+userID);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG,"OnFailure : "+e.toString());
-                                }
-                            });
-
                             Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -253,6 +236,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 
     private void getWidgets() {
         email = findViewById(R.id.email);

@@ -42,8 +42,10 @@ public class MyBlogsFragment extends Fragment {
     private BlogRecyclerAdapter blogRecyclerAdapter;
     private CollectionReference collectionRef;
     public static final String TAG = "TAG";
+
     //firebase object
     private FirebaseAuth mAuth;
+
     public MyBlogsFragment(){
 
     }
@@ -80,7 +82,7 @@ public class MyBlogsFragment extends Fragment {
                     }
                 }
             }
-        });
+        }); 
         return v;
     }
 }

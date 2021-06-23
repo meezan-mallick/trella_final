@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -62,16 +61,18 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v=inflater.inflate(R.layout.fragment_profile,container,false);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+
         welcome = v.findViewById(R.id.welcome);
         welcome_txt=v.findViewById(R.id.welcome_txt);
         sign_out = v.findViewById(R.id.sign_out);
         profile_img = v.findViewById(R.id.profile_img);
+//test
         cat = v.findViewById(R.id.cat);
         cat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i=new Intent(getActivity(),CategoryActivity.class);
+
                 startActivity(i);
 
             }
@@ -112,17 +113,6 @@ public class ProfileFragment extends Fragment {
         if(currentUser.getDisplayName()!=null){
             welcome.setText(currentUser.getDisplayName());
         }
-        else{
-            //Fetch Data from collection users using userID
-            DocumentReference dr = fstore.collection("users").document(userID);
-            dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                    welcome.setText(documentSnapshot.getString("userName"));
-                    welcome_txt.setText(documentSnapshot.getString("email"));
-                }
-            });
-        }
         if(currentUser.getEmail()!=null){
             welcome_txt.setText(currentUser.getEmail());
         }
@@ -135,7 +125,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-//        //Fetch Data from collection users using userID
+        //Fetch Data from collection users using userID
         if(currentUser.getDisplayName()==null) {
             DocumentReference dr = fstore.collection("users").document(userID);
             dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -154,7 +144,7 @@ public class ProfileFragment extends Fragment {
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
-                
+
             }
         });
         return v;
