@@ -2,15 +2,12 @@ package com.android.blogapplication;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,7 +24,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -39,15 +35,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
-import Adapter.BlogRecyclerAdapter;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.util.SortedSet;
-
-import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
@@ -275,7 +262,7 @@ public class ProfileFragment extends Fragment {
         no_of_drafts =v.findViewById(R.id.drafts_no);
 
 
-        profile_img = v.findViewById(R.id.profile_img);
+        profile_img = v.findViewById(R.id.pic_profile);
         setStatistics();
 
         signOutView = v.findViewById(R.id.signOutView);

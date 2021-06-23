@@ -46,7 +46,7 @@ public class FeedFragment extends Fragment {
 
         blog_list = new ArrayList<>();
         blog_post_view = v.findViewById(R.id.blog_post_view);
-        blogRecyclerAdapter = new BlogRecyclerAdapter(blog_list);
+        blogRecyclerAdapter = new BlogRecyclerAdapter(getContext(),blog_list);
 
         blog_post_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         blog_post_view.setAdapter(blogRecyclerAdapter);

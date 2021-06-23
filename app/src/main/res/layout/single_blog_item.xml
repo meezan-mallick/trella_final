@@ -51,7 +51,7 @@
                     app:cardCornerRadius="250dp">
 
                     <ImageView
-                        android:id="@+id/profile_img"
+                        android:id="@+id/pic_profile"
                         android:layout_width="60dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
@@ -67,7 +67,7 @@
                     android:paddingLeft="10dp">
 
                     <TextView
-                        android:id="@+id/username"
+                        android:id="@+id/uname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center|center_vertical"
@@ -75,7 +75,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/date_blogpost"
+                        android:id="@+id/blogpost_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"

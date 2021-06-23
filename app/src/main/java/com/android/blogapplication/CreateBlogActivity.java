@@ -280,7 +280,7 @@ public class CreateBlogActivity extends AppCompatActivity {
         publish = findViewById(R.id.publish);
         draft = findViewById(R.id.draft);
         blog_title = findViewById(R.id.blog_title);
-        blog_content = findViewById(R.id.content_blog);
+        blog_content = findViewById(R.id.content_blog_s);
         upload_img = findViewById(R.id.upload_image);
     }
 }
