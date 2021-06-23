@@ -4,14 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -40,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final int request_code = 1;
     GoogleSignInClient signInClient;
     GoogleSignInAccount account;
+    //dialog
+    Dialog dialog;
 
     //firebase object
     private FirebaseAuth mAuth;
@@ -54,6 +59,12 @@ public class LoginActivity extends AppCompatActivity {
         //hide the title action bar
         getSupportActionBar().hide();
         getWidgets();
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.custom_dialoge);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.dialog_background));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(false);
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
 
@@ -165,6 +176,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Configure sign-in to request the user's ID, email address, and basic
                 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+                pd.show();
                 GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestIdToken(getString(R.string.webclient_id))
                         .requestEmail().build();
@@ -241,28 +253,29 @@ public class LoginActivity extends AppCompatActivity {
         // [START_EXCLUDE silent]
         //showProgressDialog();
         // [END_EXCLUDE]
+        pd.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .
+                        addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
+                            pd.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "Successful Auth", Toast.LENGTH_LONG).show();
-
+                            Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
                             Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
                         } else {
                             // If sign in fails, display a message to the user.
+                            pd.dismiss();
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
-                        // [START_EXCLUDE]
-                        //hideProgressDialog();
-                        // [END_EXCLUDE]
+
                     }
                 });
     }
