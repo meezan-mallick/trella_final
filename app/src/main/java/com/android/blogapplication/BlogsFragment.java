@@ -30,6 +30,7 @@ public class BlogsFragment extends Fragment {
         // Action bar hide
         ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
 
+
         blog_tabLayout = v.findViewById(R.id.blog_tabLayout);
         blog_frameLayout = v.findViewById(R.id.blog_frameLayout);
         floating_btn = v.findViewById(R.id.floating_btn);

@@ -1,19 +1,20 @@
 package Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.blogapplication.BlogModel;
 import com.android.blogapplication.R;
+import com.android.blogapplication.SingleBlogDataActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,10 +32,11 @@ import java.util.List;
 public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapter.ViewHolder> {
 
     public List<BlogModel> blog_list;
+    public String uname;
     Context ctx;
-    public BlogRecyclerAdapter(List<BlogModel> blog_list) {
+    public BlogRecyclerAdapter(Context ctx,List<BlogModel> blog_list) {
         this.blog_list = blog_list;
-
+        this.ctx = ctx;
     }
 
     @NonNull
@@ -46,6 +48,9 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        final BlogModel temp_data = blog_list.get(position);
+
+
         String blog_img_uri = blog_list.get(position).getBlog_image();
         String uid = blog_list.get(position).getBlog_image();
         //intialising the firebase firestore object
@@ -58,7 +63,6 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         holder.setTime(blog_list.get(position).getTime());
         holder.setDescription(blog_list.get(position).getBlog_content());
         holder.setTitle(blog_list.get(position).getBlog_title());
-
 
         //Storage for storing images
         StorageReference mStorageRef,profileRef;
@@ -75,6 +79,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         });
         //Fetch Data from collection users using userID
         if(currentUser.getDisplayName()!="") {
+            uname = currentUser.getDisplayName();
             holder.setUserName(currentUser.getDisplayName());
             profileRef = mStorageRef.child(profile_img_uri);
 
@@ -85,7 +90,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                    holder.setUserName(documentSnapshot.getString("userName"));
+                    String uname = documentSnapshot.getString("userName");
+                    holder.setUserName(uname);
                 }
             });
         }
@@ -97,7 +103,20 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                 }
             }
         });
-
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ctx, SingleBlogDataActivity.class);
+                i.putExtra("blogimage",temp_data.getBlog_image());
+                i.putExtra("username",uname);
+                i.putExtra("content",temp_data.getBlog_content());
+                i.putExtra("title",temp_data.getBlog_title());
+                i.putExtra("time",temp_data.getTime());
+                i.putExtra("uid",temp_data.getUser_id());
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ctx.startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -114,14 +133,14 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             super(itemView);
             mView = itemView;
             blog_image = mView.findViewById(R.id.blog_image);
-            profile_img = mView.findViewById(R.id.image_profile);
+            profile_img = mView.findViewById(R.id.profile_img);
         }
         public void setDescription(String text){
              blog_description = mView.findViewById(R.id.blog_description);
              blog_description.setText(text);
         }
         public void setTime(String time){
-            blog_time = mView.findViewById(R.id.blogpost_date);
+            blog_time = mView.findViewById(R.id.date_blogpost);
             blog_time.setText(time);
         }
         public void setTitle(String title){
@@ -129,7 +148,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             blog_title.setText(title);
         }
         public void setUserName(String uname){
-            username = mView.findViewById(R.id.uname);
+            username = mView.findViewById(R.id.username);
             username.setText(uname);
         }
 

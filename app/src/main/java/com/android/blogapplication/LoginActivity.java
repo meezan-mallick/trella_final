@@ -30,6 +30,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private TextView info_text,forgotPasswordTV;
@@ -38,9 +43,12 @@ public class LoginActivity extends AppCompatActivity {
     private static final int request_code = 1;
     GoogleSignInClient signInClient;
     GoogleSignInAccount account;
-
+    public static final String TAG = "TAG";
+    String userID;
     //firebase object
     private FirebaseAuth mAuth;
+    //FireStore Object
+    private FirebaseFirestore fstore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,9 @@ public class LoginActivity extends AppCompatActivity {
         getWidgets();
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
+        //intialising the firebaseFireStore object
+        fstore = FirebaseFirestore.getInstance();
+
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
@@ -157,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void createUSer(String emailString, String passwordString) {
+    private void createUSer(final String emailString, final String passwordString) {
         mAuth.signInWithEmailAndPassword(emailString,passwordString)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -165,7 +176,6 @@ public class LoginActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
-
                             Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -209,6 +219,24 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Successful Auth", Toast.LENGTH_LONG).show();
+
+                            userID = mAuth.getCurrentUser().getUid();
+                            DocumentReference dr = fstore.collection("users").document(userID);
+                            Map<String,Object> userData = new HashMap<>();
+                            userData.put("userName",mAuth.getCurrentUser().getDisplayName());
+                            userData.put("email",mAuth.getCurrentUser().getEmail());
+                            userData.put("profile_image",mAuth.getCurrentUser().getPhotoUrl().toString());
+                            dr.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG,"Onsuccess : user profile is created for "+userID);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG,"OnFailure : "+e.toString());
+                                }
+                            });
 
                             Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
