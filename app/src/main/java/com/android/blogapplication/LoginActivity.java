@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 String emailString = email.getText().toString().trim();
                 String passwordString = password.getText().toString().trim();
-                
+
 
                 if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
                     //set error message

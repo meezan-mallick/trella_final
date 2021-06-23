@@ -51,8 +51,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
-
-
     TextView userName,userEmail,no_of_followers,no_of_posts,no_of_drafts;
     LinearLayout signOutView,categoryView;
     ImageView profile_img;
@@ -77,6 +75,10 @@ public class ProfileFragment extends Fragment {
 
         View v=inflater.inflate(R.layout.fragment_profile,container,false);
         setWigdets(v);
+
+        no_of_drafts.setText("0");
+        no_of_posts.setText("0");
+        no_of_followers.setText("0");
 
         //select category button action
         categoryView.setOnClickListener(new View.OnClickListener() {

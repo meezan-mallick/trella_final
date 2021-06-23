@@ -6,12 +6,14 @@
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/drawable-v24/profile_bottom_nav_blue.xml" value="0.2445" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/drawable/ic_baseline_login_24.xml" value="0.255" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/drawable/profile_bottom_nav.xml" value="0.2445" />
+        <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout-hdpi/fragment_profile.xml" value="0.18984375" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout-xxxhdpi/activity_intro.xml" value="0.2" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout-xxxhdpi/activity_login.xml" value="0.264" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout-xxxhdpi/activity_register.xml" value="0.17324561403508773" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout-xxxhdpi/fragment_profile.xml" value="0.4" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout-xxxhdpi/screen.xml" value="0.17324561403508773" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout/fragment_blogs.xml" value="0.19078947368421054" />
+        <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
       </map>
     </option>
   </component>
