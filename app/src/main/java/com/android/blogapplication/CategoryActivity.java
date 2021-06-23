@@ -55,15 +55,23 @@ public class CategoryActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for(QueryDocumentSnapshot documentsnapShot:queryDocumentSnapshots)
 
+                        for(QueryDocumentSnapshot documentsnapShot:queryDocumentSnapshots) {
+                            cat_name.add(documentsnapShot.getString("name"));
+                            cat_img.add(documentsnapShot.getString("image"));
+                        }
                         adapter = new CategoryAdapter(getApplicationContext(),cat_name,cat_img);
                         GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(),2,GridLayoutManager.VERTICAL,false);
                         category_recycler.setLayoutManager(gridLayoutManager);
                         category_recycler.setAdapter(adapter);
 
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CategoryActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     private void getWidgets() {
         category_recycler = findViewById(R.id.category_recycler);

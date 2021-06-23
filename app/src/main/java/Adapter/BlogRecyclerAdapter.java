@@ -94,23 +94,17 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             }
         });
 
-        //Fetch Data from collection users using userID
-        if(currentUser.getDisplayName()!="") {
-            holder.setUserName(currentUser.getDisplayName());
-            profileRef = mStorageRef.child(profile_img_uri);
+        profileRef = mStorageRef.child("profiles/"+user_id+"/profile.jpg");
+        DocumentReference dr = fstore.collection("users").document(user_id);
+        dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                String uname = documentSnapshot.getString("userName");
+                holder.setUserName(uname);
+            }
+        });
+//        profileRef = mStorageRef.child(profile_img_uri);
 
-        }else{
-            holder.setUserName(currentUser.getDisplayName());
-            profileRef = mStorageRef.child("profiles/"+user_id+"/profile.jpg");
-            DocumentReference dr = fstore.collection("users").document(user_id);
-            dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                    String uname = documentSnapshot.getString("userName");
-                    holder.setUserName(uname);
-                }
-            });
-        }
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {

@@ -249,7 +249,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void getwidgets() {
-        image_profile=findViewById(R.id.pic_profile);
+        image_profile=findViewById(R.id.profile_img);
         username=findViewById(R.id.uname);
         login_btn=findViewById(R.id.login_btn);
         registrationButton=findViewById(R.id.registration_btn);

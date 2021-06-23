@@ -35,16 +35,23 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String TAG = "TAG";
     private TextView info_text,forgotPasswordTV;
     private EditText email,password;
     private Button register_btn,google_login_btn,login_btn;
     private static final int request_code = 1;
     GoogleSignInClient signInClient;
     GoogleSignInAccount account;
-    //dialog
-    Dialog dialog;
+    String userID;
+    //FireStore Object
+    private FirebaseFirestore fstore;
 
     //firebase object
     private FirebaseAuth mAuth;
@@ -59,14 +66,11 @@ public class LoginActivity extends AppCompatActivity {
         //hide the title action bar
         getSupportActionBar().hide();
         getWidgets();
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.custom_dialoge);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.dialog_background));
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.setCancelable(false);
+
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
+        //intialising the firebaseFireStore object
+        fstore = FirebaseFirestore.getInstance();
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
@@ -240,6 +244,7 @@ public class LoginActivity extends AppCompatActivity {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
             try{
                 account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
@@ -264,6 +269,27 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             pd.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
+
+                            //user data insert into firestore database
+                            userID = mAuth.getCurrentUser().getUid();
+                            DocumentReference dr = fstore.collection("users").document(userID);
+                            Map<String,Object> userData = new HashMap<>();
+                            userData.put("userName", mAuth.getCurrentUser().getDisplayName());
+                            userData.put("email", mAuth.getCurrentUser().getEmail());
+                            userData.put("profile_image","profile image");
+                            dr.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG,"Onsuccess : user profile is created for "+userID);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG,"OnFailure : "+e.toString());
+                                }
+                            });
+
+
                             Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
                             Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
