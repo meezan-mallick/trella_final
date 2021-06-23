@@ -34,6 +34,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
@@ -111,7 +112,18 @@ public class ProfileFragment extends Fragment {
         }
 
         if(currentUser.getPhotoUrl() != null){
-            Glide.with(container).load(currentUser.getPhotoUrl().toString()).into(profile_img);
+            //Glide.with(container).load(currentUser.getPhotoUrl().toString()).into(profile_img);
+
+            //caching images
+            Picasso.get().load(currentUser.getPhotoUrl()).fetch(new Callback() {
+                @Override
+                public void onSuccess() {
+                    Picasso.get().load(currentUser.getPhotoUrl()).into(profile_img);
+                }
+                @Override
+                public void onError(Exception e) {
+                }
+            });
         }
         if(currentUser.getDisplayName()!=null){
             userName.setText(currentUser.getDisplayName());
@@ -147,9 +159,19 @@ public class ProfileFragment extends Fragment {
 
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void onSuccess(final Uri uri) {
                 if(Picasso.get().load(uri).toString()!=null) {
-                    Picasso.get().load(uri).into(profile_img);
+                    //Picasso.get().load(uri).into(profile_img);
+                    //caching images
+                    Picasso.get().load(uri).fetch(new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Picasso.get().load(uri).into(profile_img);
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
                 }
             }
         });
