@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,6 +46,8 @@ public class RegisterActivity extends AppCompatActivity {
     //firebase object
     private FirebaseAuth mAuth;
 
+    //progress dialog
+    ProgressDialog pd;
 
     //FireStore Object
     private FirebaseFirestore fstore;
@@ -59,6 +62,10 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //init progress bar
+        pd =  new ProgressDialog( this);
+        pd.setMessage("Loggin In");
 
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
@@ -111,11 +118,8 @@ public class RegisterActivity extends AppCompatActivity {
                     emailED.setError("Enter email id");
                     emailED.setFocusable(true);
                 }
-                else if(TextUtils.isEmpty(passwordString)){
-                    passwordED.setError("Enter password");
-                    passwordED.setFocusable(true);
-                }
-                else if(passwordString.length()<=8 ){
+
+                else if(passwordString.length()<=7 ){
                     passwordED.setError("Password length should be 8 or ore than 8 characters");
                     passwordED.setFocusable(true);
                 }
@@ -137,10 +141,17 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private void registerUSer(String emailStr, String passwordStr) {
+
+        //show progress dialog
+        pd.show();
         mAuth.createUserWithEmailAndPassword(emailStr,passwordStr).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
+
+                    //dismiss progress dialog
+                    pd.dismiss();
+
                     //user data insert into firestore database
                     userID = mAuth.getCurrentUser().getUid();
                     DocumentReference dr = fstore.collection("users").document(userID);
@@ -184,8 +195,19 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(i);
 
                 }else{
+                    //dismiss progress dialog
+                    pd.dismiss();
+
                     Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //dismiss progress dialog
+                pd.dismiss();
+
+                Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
             }
         });
 

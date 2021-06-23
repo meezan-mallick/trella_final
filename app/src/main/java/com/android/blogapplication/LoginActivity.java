@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -42,6 +44,9 @@ public class LoginActivity extends AppCompatActivity {
     //firebase object
     private FirebaseAuth mAuth;
 
+    //progress dialog
+    ProgressDialog pd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
 
-        account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+//        account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
 
         //-- move to Registration activity
         info_text.setText("Don't have account?");
@@ -77,15 +82,26 @@ public class LoginActivity extends AppCompatActivity {
                 String emailString = email.getText().toString().trim();
                 String passwordString = password.getText().toString().trim();
 
+
                 if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
                     //set error message
                     email.setError("Invalid Email");
                     email.setFocusable(true);
                 }
-                else{
-                    //register the user
-                    createUSer(emailString,passwordString);
+                else if(TextUtils.isEmpty(passwordString)){
+                    password.setError("Enter password");
+                    password.setFocusable(true);
                 }
+                else{
+                    //login the user
+                    try {
+                        createUSer(emailString,passwordString);
+                    }
+                    catch (Exception e){
+                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
 
 
             }
@@ -100,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
                 passwordResetDailog.setTitle("Reset Password");
                 passwordResetDailog.setMessage("Enter your mail to receive reset password link");
                 passwordResetDailog.setView(resetMail);
-
 
 //                passwordResetDailog.setView(input, (int)(19*dpi), (int)(5*dpi), (int)(14*dpi), (int)(5*dpi) );
 
@@ -128,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
                         }
-
                     }
                 });
 
@@ -138,9 +152,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     }
                 });
-
-
                 passwordResetDailog.create().show();
+
 
             }
         });
@@ -162,9 +175,17 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, request_code);
             }
         });
+
+        //init progress bar
+        pd =  new ProgressDialog( this);
+        pd.setMessage("Loggin In");
     }
 
     private void createUSer(String emailString, String passwordString) {
+
+
+        //show progress dialog
+        pd.show();
 
         mAuth.signInWithEmailAndPassword(emailString,passwordString)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -172,6 +193,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
 
+                            //dismiss progress dialog
+                            pd.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
 
@@ -181,17 +204,25 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(i);
                         }
                         else{
+                            //dismiss progress dialog
+                            pd.dismiss();
                             Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //dismiss progress dialog
+                pd.dismiss();
+                Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == request_code) {
             // The Task returned from this call is always completed, no need to attach
@@ -202,7 +233,6 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 Toast.makeText(this, "Gooogle Auth failed", Toast.LENGTH_LONG);
-
             }
         }
     }
@@ -237,8 +267,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-
-
     private void getWidgets() {
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
@@ -250,5 +278,3 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 }
-
-
