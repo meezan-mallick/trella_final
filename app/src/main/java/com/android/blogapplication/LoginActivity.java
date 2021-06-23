@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     //firebase object
     private FirebaseAuth mAuth;
 
+    //progress dialog
+    ProgressDialog pd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,15 +81,26 @@ public class LoginActivity extends AppCompatActivity {
                 String emailString = email.getText().toString().trim();
                 String passwordString = password.getText().toString().trim();
 
+
+
                 if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
                     //set error message
                     email.setError("Invalid Email");
                     email.setFocusable(true);
                 }
+
                 else{
-                    //register the user
-                    createUSer(emailString,passwordString);
+                    //login the user
+                    try {
+                         createUSer(emailString,passwordString);
+                    }
+                    catch (Exception e){
+                        Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+                    }
                 }
+
+
+
             }
         });
 
@@ -135,6 +150,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 passwordResetDailog.create().show();
+
+
             }
         });
 
@@ -155,14 +172,26 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, request_code);
             }
         });
+
+        //init progress bar
+        pd =  new ProgressDialog( this);
+        pd.setMessage("Loggin In");
     }
 
     private void createUSer(String emailString, String passwordString) {
+
+
+        //show progress dialog
+        pd.show();
+
         mAuth.signInWithEmailAndPassword(emailString,passwordString)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+
+                            //dismiss progress dialog
+                            pd.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
 
@@ -172,10 +201,19 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(i);
                         }
                         else{
+                            //dismiss progress dialog
+                            pd.dismiss();
                             Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //dismiss progress dialog
+                pd.dismiss();
+                Toast.makeText(getApplicationContext(), ""+e, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
