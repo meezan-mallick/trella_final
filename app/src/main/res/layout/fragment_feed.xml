@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@android:color/holo_purple">
-    <TextView
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#66FFFFFF"
+    tools:context=".MyBlogsFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/blog_post_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Feed Fragment"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"
-        android:textColor="#ffffff"
-        />
-</RelativeLayout>
+        android:layout_height="match_parent" />
+</FrameLayout>

@@ -164,8 +164,22 @@ public class CreateBlogActivity extends AppCompatActivity {
                     String pub_time = df.format(Calendar.getInstance().getTime());
                     Date t = Calendar.getInstance().getTime();
                     Toast.makeText(CreateBlogActivity.this, pub_time, Toast.LENGTH_SHORT).show();
+
+                    //upload image to firestore
+                    try{
                     uploadImagetoFireBase(img_uri,pub_time);
-                    addBlog(publish_draft,pub_time,t);
+                    }
+                    catch (Exception e){
+                        Toast.makeText(getApplicationContext(), "image upload error : "+e, Toast.LENGTH_SHORT).show();
+                    }
+
+                    //add blog to firestore
+                    try {
+                        addBlog(publish_draft, pub_time, t);
+                    }
+                    catch (Exception e){
+                        Toast.makeText(getApplicationContext(), "blog add error : "+e, Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }
@@ -176,8 +190,23 @@ public class CreateBlogActivity extends AppCompatActivity {
                 publish_draft = false;
                 Date t = Calendar.getInstance().getTime();
                 String draft_time = df.format(Calendar.getInstance().getTime());
-                uploadImagetoFireBase(img_uri,draft_time);
-                addBlog(publish_draft,draft_time,t);
+
+                //upload image to firestore
+                try{
+                    uploadImagetoFireBase(img_uri,draft_time);
+                }
+                catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "image upload error : "+e, Toast.LENGTH_SHORT).show();
+                }
+
+                //add blog to firestore
+                try{
+                    addBlog(publish_draft,draft_time,t);
+                }
+                catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "blog add error : "+e, Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
@@ -219,6 +248,7 @@ public class CreateBlogActivity extends AppCompatActivity {
         blogData.put("user_id",userID);
         blogData.put("time",post_time);
         blogData.put("date",d);
+
         fstore.collection("blogs")
                 .add(blogData)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

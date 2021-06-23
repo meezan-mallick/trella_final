@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.blogapplication.BlogModel;
 import com.android.blogapplication.R;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -68,6 +69,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         //intialising the StorageRefrence object
         mStorageRef = FirebaseStorage.getInstance().getReference();
         StorageReference blogref =mStorageRef.child(blog_img_uri);
+
         blogref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -76,6 +78,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
                 }
             }
         });
+
         //Fetch Data from collection users using userID
         if(currentUser.getDisplayName()!="") {
             holder.setUserName(currentUser.getDisplayName());
