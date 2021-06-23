@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -80,15 +81,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 String emailString = email.getText().toString().trim();
                 String passwordString = password.getText().toString().trim();
-
-
+                
 
                 if(!Patterns.EMAIL_ADDRESS.matcher(emailString).matches()){
                     //set error message
                     email.setError("Invalid Email");
                     email.setFocusable(true);
                 }
-
+                else if(TextUtils.isEmpty(passwordString)){
+                    password.setError("Enter password");
+                    password.setFocusable(true);
+                }
                 else{
                     //login the user
                     try {
