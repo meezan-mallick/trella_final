@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
@@ -37,10 +38,7 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
     public BlogRecyclerAdapter(Context ctx,List<BlogModel> blog_list) {
         this.blog_list = blog_list;
         this.ctx = ctx;
-    }
-
-    public BlogRecyclerAdapter() {
-
+        Picasso.get().setIndicatorsEnabled(true);
     }
 
     @NonNull
@@ -52,6 +50,8 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+
+
         final BlogModel temp_data = blog_list.get(position);
 
         String blog_img_uri = blog_list.get(position).getBlog_image();
@@ -76,9 +76,20 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
         blogref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void onSuccess(final Uri uri) {
                 if(Picasso.get().load(uri).toString()!=null) {
-                    Picasso.get().load(uri).into(holder.blog_image);
+                    //Picasso.get().load(uri).into(holder.blog_image);
+                    Picasso.get().load(uri).fetch(new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Picasso.get().load(uri).into(holder.blog_image);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
                 }
             }
         });
@@ -102,9 +113,20 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         }
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(Uri uri) {
+            public void onSuccess(final Uri uri) {
                 if(Picasso.get().load(uri).toString()!=null) {
-                    Picasso.get().load(uri).into(holder.profile_img);
+                    //Picasso.get().load(uri).into(holder.profile_img);
+
+                    //caching images
+                    Picasso.get().load(uri).fetch(new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Picasso.get().load(uri).into(holder.profile_img);
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
                 }
             }
         });
