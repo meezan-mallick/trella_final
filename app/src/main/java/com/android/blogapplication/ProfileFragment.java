@@ -2,6 +2,7 @@ package com.android.blogapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -188,13 +189,6 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
-
-
-
-
-
-
-
     //set image to profile from gallery
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -210,6 +204,7 @@ public class ProfileFragment extends Fragment {
     private void uploadImagetoFireBase(final Uri img_uri) {
         //upload img to firebase storage
         final StorageReference fileRef = mStorageRef.child("profiles/"+mAuth.getCurrentUser().getUid()+"/profile.jpg");
+
         fileRef.putFile(img_uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
