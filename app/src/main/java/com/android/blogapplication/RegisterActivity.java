@@ -55,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
     //Text fields
     private EditText username,emailED,passwordED,CpasswordED;
     private ImageView image_profile;
-    String userID,usernameString,emailString ;
+    String userID,usernameString,emailString,passwordString ;
     private Uri img_uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +103,11 @@ public class RegisterActivity extends AppCompatActivity {
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 usernameString = username.getText().toString().trim();
+                Toast.makeText(RegisterActivity.this, usernameString, Toast.LENGTH_SHORT).show();
                 emailString = emailED.getText().toString().trim();
-                String passwordString = passwordED.getText().toString().trim();
+                passwordString = passwordED.getText().toString().trim();
                 String CpasswordString = CpasswordED.getText().toString().trim();
                 if(TextUtils.isEmpty(usernameString)){
                     username.setError("Enter Username");
@@ -157,6 +159,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Map<String,Object> userData = new HashMap<>();
                     userData.put("userName",usernameString);
                     userData.put("email",emailString);
+                    userData.put("userID",userID);
                     userData.put("profile_image","profile image");
                     dr.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -250,7 +253,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void getwidgets() {
         image_profile=findViewById(R.id.profile_img);
-        username=findViewById(R.id.uname);
+        username=findViewById(R.id.username);
         login_btn=findViewById(R.id.login_btn);
         registrationButton=findViewById(R.id.registration_btn);
         emailED= findViewById(R.id.email);

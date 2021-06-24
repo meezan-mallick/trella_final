@@ -16,4 +16,5 @@
             @android:anim/fade_out
         </item>
     </style>
+
 </resources>

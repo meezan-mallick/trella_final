@@ -30,6 +30,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
+            android:noHistory="true"
             android:screenOrientation="portrait" />
         <activity android:name=".IntroActivity" />
         <activity android:name=".MainActivity">

@@ -137,7 +137,7 @@
 
             <Button
                 android:id="@+id/register_btn"
-                android:layout_width="60dp"
+                android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_marginLeft="5dp"

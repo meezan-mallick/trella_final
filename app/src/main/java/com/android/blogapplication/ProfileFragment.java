@@ -88,6 +88,7 @@ public class ProfileFragment extends Fragment {
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
+                getActivity().finish();
             }
         });
 
@@ -126,23 +127,21 @@ public class ProfileFragment extends Fragment {
                 }
             });
         }
-        if(currentUser.getDisplayName()!=null){
-            userName.setText(currentUser.getDisplayName());
-        }
-        else{
-            //Fetch Data from collection users using userID
-            DocumentReference dr = fstore.collection("users").document(userID);
-            dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                    userName.setText(documentSnapshot.getString("userName"));
-                    userEmail.setText(documentSnapshot.getString("email"));
-                }
-            });
-        }
-        if(currentUser.getEmail()!=null){
-            userEmail.setText(currentUser.getEmail());
-        }
+        //Fetch Data from collection users using userID
+        DocumentReference dr = fstore.collection("users").document(userID);
+        dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                userName.setText(documentSnapshot.getString("userName"));
+                userEmail.setText(documentSnapshot.getString("email"));
+            }
+        });
+
+
+
+//        if(currentUser.getEmail()!=null){
+//            userEmail.setText(currentUser.getEmail());
+//        }
 
         // ### End of user profile setup
 
@@ -279,7 +278,7 @@ public class ProfileFragment extends Fragment {
         no_of_drafts =v.findViewById(R.id.drafts_no);
 
 
-        profile_img = v.findViewById(R.id.pic_profile);
+        profile_img = v.findViewById(R.id.pic_profile_img);
         setStatistics();
 
         signOutView = v.findViewById(R.id.signOutView);
