@@ -4,14 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,14 +35,23 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String TAG = "TAG";
     private TextView info_text,forgotPasswordTV;
     private EditText email,password;
     private Button register_btn,google_login_btn,login_btn;
     private static final int request_code = 1;
     GoogleSignInClient signInClient;
     GoogleSignInAccount account;
+    String userID;
+    //FireStore Object
+    private FirebaseFirestore fstore;
 
     //firebase object
     private FirebaseAuth mAuth;
@@ -54,8 +66,11 @@ public class LoginActivity extends AppCompatActivity {
         //hide the title action bar
         getSupportActionBar().hide();
         getWidgets();
+
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
+        //intialising the firebaseFireStore object
+        fstore = FirebaseFirestore.getInstance();
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
@@ -165,6 +180,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Configure sign-in to request the user's ID, email address, and basic
                 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+                pd.show();
                 GoogleSignInOptions gso=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestIdToken(getString(R.string.webclient_id))
                         .requestEmail().build();
@@ -228,6 +244,7 @@ public class LoginActivity extends AppCompatActivity {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
             try{
                 account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
@@ -241,28 +258,50 @@ public class LoginActivity extends AppCompatActivity {
         // [START_EXCLUDE silent]
         //showProgressDialog();
         // [END_EXCLUDE]
+        pd.show();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .
+                        addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
+                            pd.dismiss();
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(LoginActivity.this, "Successful Auth", Toast.LENGTH_LONG).show();
 
+                            //user data insert into firestore database
+                            userID = mAuth.getCurrentUser().getUid();
+                            DocumentReference dr = fstore.collection("users").document(userID);
+                            Map<String,Object> userData = new HashMap<>();
+                            userData.put("userName", mAuth.getCurrentUser().getDisplayName());
+                            userData.put("email", mAuth.getCurrentUser().getEmail());
+                            userData.put("profile_image","profile image");
+                            dr.set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG,"Onsuccess : user profile is created for "+userID);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG,"OnFailure : "+e.toString());
+                                }
+                            });
+
+
+                            Toast.makeText(LoginActivity.this, "Welcome "+user.getEmail(), Toast.LENGTH_SHORT).show();
                             Intent i=new Intent(new Intent(getApplicationContext(),NavigationActivity.class));
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
                         } else {
                             // If sign in fails, display a message to the user.
+                            pd.dismiss();
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             //updateUI(null);
                         }
-                        // [START_EXCLUDE]
-                        //hideProgressDialog();
-                        // [END_EXCLUDE]
+
                     }
                 });
     }
