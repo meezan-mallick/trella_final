@@ -3,11 +3,13 @@ package Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +35,7 @@ import java.util.List;
 public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapter.ViewHolder> {
 
     public List<BlogModel> blog_list;
-    public String uname;
+
     Context ctx;
     public BlogRecyclerAdapter(Context ctx,List<BlogModel> blog_list) {
         this.blog_list = blog_list;
@@ -57,12 +59,12 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         String blog_img_uri = blog_list.get(position).getBlog_image();
         String uid = blog_list.get(position).getBlog_image();
         //intialising the firebase firestore object
-        FirebaseFirestore fstore = FirebaseFirestore.getInstance();
+        final FirebaseFirestore fstore = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         String profile_img_uri = "profiles/"+blog_list.get(position).getUser_id()+"/profile.jpg";
-        String user_id = blog_list.get(position).getUser_id();
+        final String user_id = blog_list.get(position).getUser_id();
         holder.setTime(blog_list.get(position).getTime());
         holder.setDescription(blog_list.get(position).getBlog_content());
         holder.setTitle(blog_list.get(position).getBlog_title());
@@ -130,15 +132,25 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(ctx, SingleBlogDatactivity.class);
-                i.putExtra("blogimage",temp_data.getBlog_image());
-                i.putExtra("username",uname);
-                i.putExtra("content",temp_data.getBlog_content());
-                i.putExtra("title",temp_data.getBlog_title());
-                i.putExtra("time",temp_data.getTime());
-                i.putExtra("uid",temp_data.getUser_id());
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ctx.startActivity(i);
+                DocumentReference dr = fstore.collection("users").document(user_id);
+                dr.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        String uname = documentSnapshot.getString("userName");
+                        holder.setUserName(uname);
+                        Intent i = new Intent(ctx, SingleBlogDatactivity.class);
+                        i.putExtra("blogimage",temp_data.getBlog_image());
+                        i.putExtra("username",uname);
+                        i.putExtra("content",temp_data.getBlog_content());
+                        i.putExtra("title",temp_data.getBlog_title());
+                        i.putExtra("time",temp_data.getTime());
+                        i.putExtra("uid",temp_data.getUser_id());
+                        i.putExtra("category",temp_data.getCategory());
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        ctx.startActivity(i);
+                    }
+                });
+
             }
         });
 
@@ -175,6 +187,10 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             blog_title.setText(title);
         }
         public void setUserName(String name){
+            username = mView.findViewById(R.id.uname);
+            username.setText(name);
+        }
+        public void setCategory(String name){
             username = mView.findViewById(R.id.uname);
             username.setText(name);
         }

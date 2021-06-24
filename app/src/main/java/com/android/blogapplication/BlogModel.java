@@ -6,16 +6,18 @@ public class BlogModel {
     private String blog_title;
     private String blog_image;
     private String user_id;
+    private String category;
 
     public BlogModel() {
     }
 
-    public BlogModel(String blog_content, String time, String blog_title, String blog_image, String user_id) {
+    public BlogModel(String blog_content, String time, String blog_title, String blog_image, String user_id,String category) {
         this.blog_content = blog_content;
         this.time = time;
         this.blog_title = blog_title;
         this.blog_image = blog_image;
         this.user_id = user_id;
+        this.category = category;
     }
 
     public String getBlog_content() {
@@ -56,5 +58,13 @@ public class BlogModel {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

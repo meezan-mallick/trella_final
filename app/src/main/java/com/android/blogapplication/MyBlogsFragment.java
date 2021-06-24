@@ -73,12 +73,13 @@ public class MyBlogsFragment extends Fragment {
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-
-                for(DocumentChange doc: queryDocumentSnapshots.getDocumentChanges()){
-                    if(doc.getType() == DocumentChange.Type.ADDED){
-                        BlogModel blogModel = doc.getDocument().toObject(BlogModel.class);
-                        blog_list.add(blogModel);
-                        blogRecyclerAdapter.notifyDataSetChanged();
+                if(!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                        if (doc.getType() == DocumentChange.Type.ADDED) {
+                            BlogModel blogModel = doc.getDocument().toObject(BlogModel.class);
+                            blog_list.add(blogModel);
+                            blogRecyclerAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
             }

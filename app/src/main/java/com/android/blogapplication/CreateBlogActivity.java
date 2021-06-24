@@ -44,7 +44,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
- 
+import java.util.concurrent.TimeUnit;
+
 public class CreateBlogActivity extends AppCompatActivity {
     public static final String TAG = "TAG";
     private  Spinner spinner;
@@ -65,7 +66,8 @@ public class CreateBlogActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     //Storage for storing images
     private StorageReference mStorageRef;
-    ProgressDialog progressDialog;
+    ProgressDialog pd;
+    String random_img = "image_"+String.valueOf(Math.random())+".jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +79,13 @@ public class CreateBlogActivity extends AppCompatActivity {
         actionBar.setTitle("Add New Blog Post");
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        Toast.makeText(this, random_img, Toast.LENGTH_SHORT).show();
 
 //        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
 //        String currentTime = df.format(Calendar.getInstance().getTime());
+//init progress bar
+        pd =  new ProgressDialog( this);
+        pd.setMessage("Uploading Blog");
 
         //intialising the firebase object
         mAuth = FirebaseAuth.getInstance();
@@ -141,70 +147,49 @@ public class CreateBlogActivity extends AppCompatActivity {
             }
         });
 
-        df = new SimpleDateFormat("ddMMMyyyy_HH:mm");
-        df1 = new SimpleDateFormat("d MMM, yyyy-HH:mm");
+        df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+//        df1 = new SimpleDateFormat("d MMM, yyyy-HH:mm");
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pd.show();
                 if(select_cat == false){
                     Toast.makeText(CreateBlogActivity.this, "Please Select Category", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     publish_draft = true;
-                    Toast.makeText(CreateBlogActivity.this, "btn publish", Toast.LENGTH_SHORT).show();
-                    String pub_time = df.format(Calendar.getInstance().getTime());
-
-
-
-                    //upload image to firestore
-                    try{
-                        uploadImagetoFireBase(img_uri,pub_time);
-                    }
-                    catch (Exception e){
-                        Toast.makeText(getApplicationContext(), "image upload error : "+e, Toast.LENGTH_SHORT).show();
-                    }
-
-                    //add blog to firestore
+                    pd.show();
+                    uploadImagetoFireBase(img_uri,random_img);
                     try {
-                        addBlog(publish_draft, pub_time);
-                    }
-                    catch (Exception e){
-                        Toast.makeText(getApplicationContext(), "blog add error : "+e, Toast.LENGTH_SHORT).show();
-                    }
-                }
 
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    addBlog(publish_draft,random_img);
+
+                }
             }
         });
         draft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 publish_draft = false;
-                Date t = Calendar.getInstance().getTime();
-                String draft_time = df.format(Calendar.getInstance().getTime());
-
-                //upload image to firestore
-                try{
-                    uploadImagetoFireBase(img_uri,draft_time);
+                uploadImagetoFireBase(img_uri,random_img);
+                try {pd.show();
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "image upload error : "+e, Toast.LENGTH_SHORT).show();
-                }
-
-                //add blog to firestore
-                try{
-                    addBlog(publish_draft,draft_time);
-                }
-                catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "blog add error : "+e, Toast.LENGTH_SHORT).show();
-                }
-
+                addBlog(publish_draft,random_img);
             }
         });
     }
 
-    private void uploadImagetoFireBase(final Uri img_uri,String post_time) {
+    private void uploadImagetoFireBase(final Uri img_uri,String random_img) {
         //upload img to firebase storage
-        final StorageReference fileRef = mStorageRef.child("blogsImages/"+mAuth.getCurrentUser().getUid()+"/"+post_time+"-blogImage.jpg");
+        final StorageReference fileRef = mStorageRef.child("blogsImages/"+mAuth.getCurrentUser().getUid()+"/"+random_img);
         Toast.makeText(this, fileRef.toString()+" - file ref", Toast.LENGTH_SHORT).show();
         fileRef.putFile(img_uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -212,6 +197,7 @@ public class CreateBlogActivity extends AppCompatActivity {
                 fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        pd.dismiss();
                         Toast.makeText(CreateBlogActivity.this, "image uploaded", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -219,51 +205,66 @@ public class CreateBlogActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
                 Toast.makeText(CreateBlogActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
-    public void addBlog(Boolean publish_bol,String post_time){
-        Date d = Calendar.getInstance().getTime();
-        userID = mAuth.getCurrentUser().getUid();
-        String selected_cat = spinner.getSelectedItem().toString();
-        String img_path = "blogsImages/"+mAuth.getCurrentUser().getUid()+"/"+post_time+"-blogImage.jpg";
+    public void addBlog(Boolean publish_bol, final String random_img){
+//        try {
+            pd.show();
+            uploadImagetoFireBase(img_uri,random_img);
+            Date d = Calendar.getInstance().getTime();
+            userID = mAuth.getCurrentUser().getUid();
+            String selected_cat = spinner.getSelectedItem().toString();
+            String img_path = "blogsImages/" + mAuth.getCurrentUser().getUid() + "/" + random_img;
+            df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            String pub_time = df.format(Calendar.getInstance().getTime());
 
-        // Add a new blog(document)
-        Map<String, Object> blogData = new HashMap<>();
-        blogData.put("blog_title",blog_title.getText().toString());
-        blogData.put("blog_content",blog_content.getText().toString());
-        blogData.put("blog_image",img_path);
-        blogData.put("category",selected_cat);
-        blogData.put("publish",publish_bol);
-        blogData.put("user_id",userID);
-        blogData.put("time",post_time);
-        blogData.put("date",d);
+            // Add a new blog(document)
+            Map<String, Object> blogData = new HashMap<>();
+            blogData.put("blog_title", blog_title.getText().toString());
+            blogData.put("blog_content", blog_content.getText().toString());
+            blogData.put("blog_image", img_path);
+            blogData.put("category", selected_cat);
+            blogData.put("publish", publish_bol);
+            blogData.put("user_id", userID);
+            blogData.put("time", pub_time);
+            blogData.put("date", d);
 
-        fstore.collection("blogs")
-                .add(blogData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                        Toast.makeText(CreateBlogActivity.this, "New Blog added Successfully", Toast.LENGTH_SHORT).show();
-                        onBackPressed(); 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                        Toast.makeText(CreateBlogActivity.this, "Error : "+e, Toast.LENGTH_SHORT).show();
-                    }
-                });
+            fstore.collection("blogs")
+                    .add(blogData)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            pd.dismiss();
+//                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                            Toast.makeText(CreateBlogActivity.this, "New Blog added Successfully", Toast.LENGTH_SHORT).show();
+
+                            onBackPressed();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Log.w(TAG, "Error adding document", e);
+                            Toast.makeText(CreateBlogActivity.this, "Error : " + e, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+//        }
+//        catch (Exception e){
+//            pd.dismiss();
+//            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//        }
     }
 
     //open gallery on click
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==1000){
             if(resultCode == Activity.RESULT_OK){
@@ -273,6 +274,7 @@ public class CreateBlogActivity extends AppCompatActivity {
             }
         }
     }
+
     public boolean onSupportNavigateUp(){
         onBackPressed();
         return super.onSupportNavigateUp();
@@ -283,7 +285,7 @@ public class CreateBlogActivity extends AppCompatActivity {
         publish = findViewById(R.id.publish);
         draft = findViewById(R.id.draft);
         blog_title = findViewById(R.id.blog_title);
-        blog_content = findViewById(R.id.content_blog_s);
+        blog_content = findViewById(R.id.content_blog);
         upload_img = findViewById(R.id.upload_image);
     }
 }

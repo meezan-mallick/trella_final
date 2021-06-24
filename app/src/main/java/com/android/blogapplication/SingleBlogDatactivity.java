@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
 
 public class SingleBlogDatactivity extends AppCompatActivity {
     ImageView blog_img,profile_img;
-    TextView username,date_blogpost,title_blog,content_blog;
+    TextView username,date_blogpost,title_blog,content_blog,category;
     StorageReference mStorageRef,profileRef;
 
 
@@ -38,6 +38,7 @@ public class SingleBlogDatactivity extends AppCompatActivity {
         String title = i.getStringExtra("title");
         String time = i.getStringExtra("time");
         String user_id = i.getStringExtra("uid");
+        String cat = i.getStringExtra("category");
         mStorageRef = FirebaseStorage.getInstance().getReference();
         StorageReference blogref = mStorageRef.child(imagename);
         blogref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -61,6 +62,7 @@ public class SingleBlogDatactivity extends AppCompatActivity {
         content_blog.setText(content);
         title_blog.setText(title);
         date_blogpost.setText(time);
+        category.setText(cat);
 
     }
     public boolean onSupportNavigateUp(){
@@ -75,6 +77,7 @@ public class SingleBlogDatactivity extends AppCompatActivity {
         content_blog = findViewById(R.id.content_blog_s);
         blog_img = findViewById(R.id.blog_img_s);
         profile_img = findViewById(R.id.profile_img_s);
+        category = findViewById(R.id.category_blog_s);
 
     }
 }
