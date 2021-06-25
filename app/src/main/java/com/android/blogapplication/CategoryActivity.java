@@ -97,20 +97,20 @@ public class CategoryActivity extends AppCompatActivity implements CategoryListe
         category_choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<CategoryModel> selectedCategory = adapter.getSelectedCategory();
-                Toast.makeText(CategoryActivity.this, selectedCategory.size()+" ", Toast.LENGTH_SHORT).show();
-                StringBuilder categories = new StringBuilder();
-                for(int i=0; i<selectedCategory.size(); i++){
-                    if(i==0){
-                        categories.append(selectedCategory.get(i).getName());
-                    }else {
-                        categories.append("\n").append(selectedCategory.get(i).getName());;
-                    }
-                }
-                Toast.makeText(CategoryActivity.this, categories.toString(), Toast.LENGTH_SHORT).show();
+//                List<CategoryModel> selectedCategory = adapter.getSelectedCategory();
+//                Toast.makeText(CategoryActivity.this, selectedCategory.size()+" ", Toast.LENGTH_SHORT).show();
+//                StringBuilder categories = new StringBuilder();
+//                for(int i=0; i<selectedCategory.size(); i++){
+//                    if(i==0){
+//                        categories.append(selectedCategory.get(i).getName());
+//                    }else {
+//                        categories.append("\n").append(selectedCategory.get(i).getName());;
+//                    }
+//                }
+//                Toast.makeText(CategoryActivity.this, categories.toString(), Toast.LENGTH_SHORT).show();
 
-//                Intent i=new Intent(getApplicationContext(),NavigationActivity.class);
-//                startActivity(i);
+                Intent i=new Intent(getApplicationContext(),NavigationActivity.class);
+                startActivity(i);
             }
         });
 
