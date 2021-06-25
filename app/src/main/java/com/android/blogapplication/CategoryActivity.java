@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,9 +25,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,7 +38,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryActivity extends AppCompatActivity {
+import javax.annotation.Nullable;
+
+public class CategoryActivity extends AppCompatActivity implements CategoryListener{
     TextView textView2;
     RecyclerView category_recycler;
     FirebaseFirestore fstore;
@@ -42,38 +48,81 @@ public class CategoryActivity extends AppCompatActivity {
     ArrayList<String> cat_name=new ArrayList<>();
     ArrayList<String> cat_img=new ArrayList<>();
     CategoryAdapter adapter;
+    ImageView category_choose;
+    private List<CategoryModel> cat_list;
 
-
+    CategoryListener ct;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
+        getSupportActionBar().hide();
         getWidgets();
+
+        cat_list = new ArrayList<>();
         fstore = FirebaseFirestore.getInstance();
-        collectionRef = fstore.collection("categories");
-        collectionRef.get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+
+        fstore.collection("categories")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if(!queryDocumentSnapshots.isEmpty()) {
+                            for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                                if (doc.getType() == DocumentChange.Type.ADDED) {
+                                    CategoryModel catModel = doc.getDocument().toObject(CategoryModel.class);
+                                    cat_list.add(catModel);
+                                }
 
-                        for(QueryDocumentSnapshot documentsnapShot:queryDocumentSnapshots) {
-                            cat_name.add(documentsnapShot.getString("name"));
-                            cat_img.add(documentsnapShot.getString("image"));
+                            }
+//                            adapter = new CategoryAdapter(getApplicationContext(),cat_list,ct);
+                            adapter = new CategoryAdapter(getApplicationContext(),cat_list,ct);
+                            GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(),2,GridLayoutManager.VERTICAL,false);
+                            category_recycler.setLayoutManager(gridLayoutManager);
+                            category_recycler.setAdapter(adapter);
+
                         }
-                        adapter = new CategoryAdapter(getApplicationContext(),cat_name,cat_img);
-                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(),2,GridLayoutManager.VERTICAL,false);
-                        category_recycler.setLayoutManager(gridLayoutManager);
-                        category_recycler.setAdapter(adapter);
-
                     }
-                }).addOnFailureListener(new OnFailureListener() {
+                });
+//        CategoryModel catModel1 = new CategoryModel("abc","axsdxs");
+//        cat_list.add(catModel1);
+//        CategoryModel catModel2 = new CategoryModel("Fashion","axsdxs");
+//        cat_list.add(catModel2);
+//        adapter = new CategoryAdapter(getApplicationContext(),cat_list,this);
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(),2,GridLayoutManager.VERTICAL,false);
+//        category_recycler.setLayoutManager(gridLayoutManager);
+//        category_recycler.setAdapter(adapter);
+
+//
+        category_choose.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CategoryActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                List<CategoryModel> selectedCategory = adapter.getSelectedCategory();
+                Toast.makeText(CategoryActivity.this, selectedCategory.size()+" ", Toast.LENGTH_SHORT).show();
+                StringBuilder categories = new StringBuilder();
+                for(int i=0; i<selectedCategory.size(); i++){
+                    if(i==0){
+                        categories.append(selectedCategory.get(i).getName());
+                    }else {
+                        categories.append("\n").append(selectedCategory.get(i).getName());;
+                    }
+                }
+                Toast.makeText(CategoryActivity.this, categories.toString(), Toast.LENGTH_SHORT).show();
+
+//                Intent i=new Intent(getApplicationContext(),NavigationActivity.class);
+//                startActivity(i);
             }
         });
+
     }
+
     private void getWidgets() {
         category_recycler = findViewById(R.id.category_recycler);
+        category_choose = findViewById(R.id.category_choose);
+    }
+
+    @Override
+    public void OnCategorySelect(Boolean isSelected) {
+
     }
 }

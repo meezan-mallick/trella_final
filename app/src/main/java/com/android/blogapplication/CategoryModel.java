@@ -4,6 +4,7 @@ public class CategoryModel {
     private String name;
     private String image;
     int currentCount = 0;
+    Boolean isSelected = false;
 
     public CategoryModel() {}
 
