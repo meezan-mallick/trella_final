@@ -35,7 +35,7 @@ public class NavigationActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_feed:
-                            selectedFragment = new FeedFragment();
+                            selectedFragment = new usersFragment();
                             break;
                         case R.id.nav_blog:
                             selectedFragment = new BlogsFragment();

@@ -31,7 +31,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
-
 public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapter.ViewHolder> {
 
     public List<BlogModel> blog_list;
@@ -127,8 +126,6 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
             }
         });
 
-
-
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,15 +150,12 @@ public class BlogRecyclerAdapter extends RecyclerView.Adapter<BlogRecyclerAdapte
 
             }
         });
-
-
     }
 
     @Override
     public int getItemCount() {
         return blog_list.size();
     }
-
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView blog_description,blog_time,blog_title,username;

@@ -127,9 +127,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final EditText resetMail = new EditText(v.getContext());
+                resetMail.setHint("Email address");
                 final AlertDialog.Builder passwordResetDailog = new AlertDialog.Builder(v.getContext());
                 passwordResetDailog.setTitle("Reset Password");
                 passwordResetDailog.setMessage("Enter your mail to receive reset password link");
+
                 passwordResetDailog.setView(resetMail);
 
 //                passwordResetDailog.setView(input, (int)(19*dpi), (int)(5*dpi), (int)(14*dpi), (int)(5*dpi) );
@@ -218,6 +220,7 @@ public class LoginActivity extends AppCompatActivity {
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
+                            finish();
                         }
                         else{
                             //dismiss progress dialog

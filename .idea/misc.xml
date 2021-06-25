@@ -16,10 +16,18 @@
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout/fragment_feed.xml" value="0.2" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout/fragment_my_blogs.xml" value="0.2" />
         <entry key="..\:/SEM 6 Guj Uni/Blog App/blog-app/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/drawable/edit_blue.xml" value="0.1755" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/layout-xxxhdpi/fragment_profile.xml" value="0.264" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/layout/fragment_feed.xml" value="0.22780797101449277" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/layout/fragment_home.xml" value="0.253125" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/layout/fragment_users.xml" value="0.253125" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/layout/row_users.xml" value="0.22780797101449277" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/layout/single_blog_item.xml" value="0.253125" />
+        <entry key="..\:/Users/MEEZAN MALEK/Desktop/android_project/blog_app/blog-app/app/src/main/res/menu/bottom_navigation.xml" value="0.2375" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
